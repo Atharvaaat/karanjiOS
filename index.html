@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaranjiOS 69</title>
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --dock-bg: rgba(255,255,255,0.18);
+    --glass: rgba(255,255,255,0.14);
+    --glass-border: rgba(255,255,255,0.28);
+    --text: #fff;
+    --accent: #ff6b6b;
+    --accent2: #ffd93d;
+    --accent3: #6bcb77;
+    --accent4: #4d96ff;
+    --shadow: 0 8px 32px rgba(0,0,0,0.38);
+  }
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'SF Pro Display', 'Segoe UI', sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ===== LOCK SCREEN ===== */
+  #lockscreen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.6s ease;
+  }
+  #lockscreen .lock-time {
+    font-size: clamp(72px, 14vw, 140px);
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: -4px;
+    text-shadow: 0 0 60px rgba(255,255,255,0.3);
+    line-height: 1;
+  }
+  #lockscreen .lock-date {
+    font-size: clamp(18px, 3vw, 26px);
+    color: rgba(255,255,255,0.8);
+    margin-top: 8px;
+    letter-spacing: 2px;
+  }
+  #lockscreen .lock-hint {
+    position: absolute; bottom: 60px;
+    font-size: 14px; color: rgba(255,255,255,0.5);
+    animation: bounce 2s infinite;
+    letter-spacing: 3px;
+  }
+  #lockscreen .birthday-msg {
+    margin-top: 40px;
+    font-size: clamp(20px, 4vw, 36px);
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b);
+    background-size: 300%;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  @keyframes shimmer { 0%{background-position:0%} 100%{background-position:300%} }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  /* ===== DESKTOP ===== */
+  #desktop {
+    width: 100%; height: 100%;
+    position: relative;
+    overflow: hidden;
+    display: none;
+  }
+  #wallpaper {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, #ff6b6b55 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, #4d96ff55 0%, transparent 60%),
+      radial-gradient(ellipse at 60% 80%, #ffd93d44 0%, transparent 60%),
+      linear-gradient(135deg, #1a0533 0%, #0d1b4b 40%, #0a2d1f 100%);
+    z-index: 0;
+  }
+  #wallpaper::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: starscroll 30s linear infinite;
+  }
+  @keyframes starscroll { from{background-position:0 0} to{background-position:40px 40px} }
+
+  /* ===== TOPBAR ===== */
+  #topbar {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 100;
+    height: 30px;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(20px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    font-size: 13px; color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  #topbar .logo { font-weight: 700; font-size: 15px; }
+  #topbar .center { position: absolute; left: 50%; transform: translateX(-50%); font-weight: 600; }
+  #topbar .right { display: flex; gap: 14px; align-items: center; font-size: 12px; }
+  #clock-top { font-weight: 600; }
+
+  /* ===== DESKTOP ICONS ===== */
+  #icons-grid {
+    position: absolute;
+    top: 50px; left: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 90px);
+    gap: 10px;
+    z-index: 10;
+  }
+  .desktop-icon {
+    width: 90px;
+    display: flex; flex-direction: column; align-items: center;
+    cursor: pointer;
+    padding: 8px 4px;
+    border-radius: 12px;
+    transition: background 0.15s;
+  }
+  .desktop-icon:hover { background: rgba(255,255,255,0.12); }
+  .desktop-icon:active { background: rgba(255,255,255,0.22); transform: scale(0.95); }
+  .desktop-icon .icon-emoji {
+    font-size: 42px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+    transition: transform 0.15s;
+  }
+  .desktop-icon:hover .icon-emoji { transform: scale(1.12) translateY(-3px); }
+  .desktop-icon .icon-label {
+    margin-top: 5px;
+    font-size: 12px; color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    line-height: 1.2;
+    max-width: 82px;
+    word-wrap: break-word;
+  }
+
+  /* ===== DOCK ===== */
+  #dock {
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 22px;
+    padding: 8px 14px;
+    display: flex; gap: 10px; align-items: flex-end;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  }
+  .dock-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    cursor: pointer;
+    transition: transform 0.15s;
+    position: relative;
+  }
+  .dock-icon:hover { transform: translateY(-14px) scale(1.25); }
+  .dock-icon::after {
+    content: attr(data-label);
+    position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.7); color: #fff;
+    font-size: 11px; padding: 2px 8px; border-radius: 6px;
+    white-space: nowrap; opacity: 0; pointer-events: none;
+    transition: opacity 0.15s;
+  }
+  .dock-icon:hover::after { opacity: 1; }
+  .dock-sep { width: 1px; height: 40px; background: rgba(255,255,255,0.25); margin: 0 4px; align-self: center; }
+
+  /* ===== NOTIFICATION ===== */
+  #notification-container {
+    position: absolute; top: 40px; right: 16px;
+    z-index: 500;
+    display: flex; flex-direction: column; gap: 10px;
+    width: 340px;
+  }
+  .notif {
+    background: rgba(30,30,40,0.92);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    animation: slideIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    cursor: pointer;
+    position: relative;
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  .notif.show { transform: translateX(0); opacity: 1; }
+  .notif.hide { animation: slideOut 0.3s ease forwards; }
+  @keyframes slideIn { to { transform: translateX(0); opacity: 1; } }
+  @keyframes slideOut { to { transform: translateX(400px); opacity: 0; } }
+  .notif-avatar {
+    width: 44px; height: 44px; border-radius: 12px;
+    object-fit: cover; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.2);
+  }
+  .notif-avatar-emoji {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .notif-body { flex: 1; min-width: 0; }
+  .notif-app { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px; }
+  .notif-title { font-size: 14px; font-weight: 700; color: #fff; }
+  .notif-msg { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px; line-height: 1.4; }
+  .notif-time { position: absolute; top: 14px; right: 14px; font-size: 11px; color: rgba(255,255,255,0.4); }
+
+  /* ===== WINDOWS ===== */
+  .window {
+    position: absolute;
+    background: rgba(28,28,36,0.95);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    min-width: 320px; min-height: 200px;
+    z-index: 200;
+    display: none;
+    overflow: hidden;
+    animation: windowOpen 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    resize: both;
+  }
+  @keyframes windowOpen { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+  .window.active { z-index: 300; }
+  .window-titlebar {
+    height: 38px;
+    background: rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; padding: 0 12px;
+    gap: 8px; cursor: move;
+  }
+  .traffic { width: 13px; height: 13px; border-radius: 50%; cursor: pointer; transition: filter 0.15s; }
+  .traffic:hover { filter: brightness(1.3); }
+  .t-close { background: #ff5f57; }
+  .t-min { background: #ffbd2e; }
+  .t-max { background: #28ca41; }
+  .window-title { flex: 1; text-align: center; font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 600; margin-left: -39px; }
+  .window-body { padding: 16px; color: #fff; overflow-y: auto; height: calc(100% - 38px); }
+
+  /* ===== FINDER WINDOW ===== */
+  #finder-window { width: 680px; height: 420px; top: 80px; left: 140px; }
+  .finder-sidebar {
+    width: 160px; background: rgba(0,0,0,0.3);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 0; height: 100%; float: left;
+    overflow-y: auto;
+  }
+  .finder-sidebar-item {
+    padding: 7px 16px; font-size: 13px; color: rgba(255,255,255,0.65);
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    border-radius: 6px; margin: 1px 6px;
+    transition: background 0.12s;
+  }
+  .finder-sidebar-item:hover, .finder-sidebar-item.active { background: rgba(255,255,255,0.1); color: #fff; }
+  .finder-main { margin-left: 160px; padding: 12px; }
+  .finder-path { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+  .finder-files { display: grid; grid-template-columns: repeat(auto-fill, 80px); gap: 8px; }
+  .finder-file {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 8px 4px; border-radius: 8px; cursor: pointer;
+    transition: background 0.12s;
+  }
+  .finder-file:hover { background: rgba(255,255,255,0.1); }
+  .finder-file .ff-icon { font-size: 34px; }
+  .finder-file .ff-name { font-size: 11px; color: rgba(255,255,255,0.8); text-align: center; margin-top: 4px; line-height: 1.2; }
+
+  /* ===== NOTES WINDOW ===== */
+  #notes-window { width: 460px; height: 380px; top: 100px; left: 500px; }
+  .notes-body { background: #1a1a2e; padding: 16px; height: 100%; display: flex; flex-direction: column; }
+  .notes-title { font-size: 20px; font-weight: 700; color: var(--accent2); margin-bottom: 12px; }
+  .notes-content { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.8; flex: 1; overflow-y: auto; white-space: pre-line; }
+
+  /* ===== BROWSER WINDOW ===== */
+  #browser-window { width: 700px; height: 460px; top: 60px; left: 200px; }
+  .browser-bar { display: flex; gap: 8px; padding: 0 0 12px 0; align-items: center; }
+  .browser-url {
+    flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px; padding: 6px 12px; font-size: 13px; color: rgba(255,255,255,0.6);
+    font-family: 'Space Mono', monospace;
+  }
+  .browser-content { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 20px; text-align: center; }
+  .bday-web-header { font-size: 28px; font-weight: 700; background: linear-gradient(90deg,#ff6b6b,#ffd93d,#6bcb77); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+  /* ===== SETTINGS WINDOW ===== */
+  #settings-window { width: 560px; height: 400px; top: 120px; left: 180px; }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 14px; color: rgba(255,255,255,0.8);
+  }
+  .settings-val { color: rgba(255,255,255,0.4); font-size: 13px; }
+  .toggle { width: 46px; height: 26px; border-radius: 13px; background: var(--accent3); position: relative; cursor: pointer; transition: background 0.2s; }
+  .toggle::after { content:''; position:absolute; top:3px; right:3px; width:20px; height:20px; background:#fff; border-radius:50%; transition: right 0.2s; }
+  .toggle.off { background: rgba(255,255,255,0.2); }
+  .toggle.off::after { right: auto; left: 3px; }
+
+  /* ===== MUSIC PLAYER ===== */
+  #music-window { width: 340px; height: 440px; top: 100px; left: 800px; }
+  .music-art {
+    width: 200px; height: 200px; border-radius: 16px; margin: 0 auto 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+    background: linear-gradient(135deg, #302b63, #24243e);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    animation: spin 8s linear infinite paused;
+  }
+  .music-art.playing { animation-play-state: running; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .music-title { text-align: center; font-size: 16px; font-weight: 700; color: #fff; }
+  .music-artist { text-align: center; font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+  .music-progress { margin: 16px 0; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; position: relative; cursor: pointer; }
+  .music-fill { height: 100%; background: linear-gradient(90deg, #ff6b6b, #ffd93d); border-radius: 2px; width: 35%; transition: width 0.5s linear; }
+  .music-controls { display: flex; justify-content: center; gap: 20px; align-items: center; }
+  .mc-btn { font-size: 24px; cursor: pointer; transition: transform 0.1s; }
+  .mc-btn:hover { transform: scale(1.2); }
+  .mc-play { font-size: 40px; }
+
+  /* ===== PROFILE / ABOUT ME ===== */
+  #about-window { width: 440px; height: 480px; top: 80px; left: 260px; }
+  .profile-header {
+    background: linear-gradient(135deg, #302b63, #24243e);
+    padding: 30px 20px 20px;
+    text-align: center;
+  }
+  .profile-avatar {
+    width: 90px; height: 90px; border-radius: 50%;
+    border: 3px solid var(--accent2);
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 50px;
+    background: rgba(255,255,255,0.1);
+    overflow: hidden;
+  }
+  .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-name { font-size: 22px; font-weight: 700; color: #fff; }
+  .profile-role { font-size: 14px; color: var(--accent2); margin-top: 4px; }
+  .profile-stats { display: flex; justify-content: center; gap: 30px; margin-top: 16px; }
+  .stat-item { text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+  .profile-bio { padding: 16px 20px; }
+  .bio-row { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 13px; }
+  .bio-key { color: rgba(255,255,255,0.4); width: 100px; flex-shrink: 0; }
+  .bio-val { color: #fff; }
+
+  /* ===== PHOTOS WINDOW ===== */
+  #photos-window { width: 560px; height: 400px; top: 100px; left: 220px; }
+  .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 4px; }
+  .photo-item {
+    aspect-ratio: 1; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 50px; cursor: pointer;
+    transition: transform 0.15s;
+    position: relative; overflow: hidden;
+  }
+  .photo-item:hover { transform: scale(1.05); z-index: 1; }
+  .photo-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.6); font-size: 11px;
+    color: #fff; padding: 4px 6px; text-align: center;
+  }
+
+  /* ===== CONTEXT MENU ===== */
+  #context-menu {
+    position: absolute; z-index: 999;
+    background: rgba(40,40,55,0.96);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 6px;
+    min-width: 200px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    display: none;
+    animation: fadeIn 0.1s ease;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
+  .cm-item {
+    padding: 8px 14px; font-size: 13px; color: rgba(255,255,255,0.85);
+    border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    transition: background 0.1s;
+  }
+  .cm-item:hover { background: rgba(255,255,255,0.1); }
+  .cm-sep { height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0; }
+  .cm-key { color: rgba(255,255,255,0.3); font-size: 12px; }
+
+  /* ===== BIRTHDAY MODAL ===== */
+  #bday-modal {
+    position: fixed; inset: 0; z-index: 9000;
+    background: rgba(0,0,0,0.8);
+    display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(10px);
+  }
+  .bday-card {
+    background: linear-gradient(135deg, #1a0533, #0d1b4b);
+    border: 2px solid rgba(255,215,0,0.4);
+    border-radius: 24px;
+    padding: 40px 50px;
+    text-align: center;
+    max-width: 520px; width: 90%;
+    position: relative; overflow: hidden;
+    box-shadow: 0 0 80px rgba(255,107,107,0.3);
+  }
+  .bday-card::before {
+    content: '';
+    position: absolute; inset: -2px;
+    background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b);
+    border-radius: 26px;
+    z-index: -1;
+    animation: borderAnim 3s linear infinite;
+    background-size: 300%;
+  }
+  @keyframes borderAnim { to{background-position:300%} }
+  .bday-emoji { font-size: 64px; animation: bounce 1s infinite; }
+  .bday-title { font-size: 36px; font-weight: 800; margin: 12px 0;
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .bday-text { font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.7; }
+  .bday-close { margin-top: 24px; padding: 12px 36px; background: var(--accent); color: #fff; border: none; border-radius: 50px; font-size: 15px; font-weight: 700; cursor: pointer; transition: transform 0.1s; letter-spacing: 1px; }
+  .bday-close:hover { transform: scale(1.05); }
+  .confetti { position: absolute; font-size: 20px; animation: fall 3s linear infinite; }
+  @keyframes fall { 0%{top:-20px;opacity:1} 100%{top:110%;opacity:0} }
+
+  /* ===== TERMINAL ===== */
+  #terminal-window { width: 580px; height: 360px; top: 140px; left: 180px; }
+  .terminal-body { background: #0d1117; height: 100%; padding: 12px; font-family: 'Space Mono', monospace; font-size: 13px; overflow-y: auto; }
+  .term-line { margin-bottom: 4px; }
+  .term-prompt { color: #6bcb77; }
+  .term-cmd { color: #fff; }
+  .term-out { color: rgba(255,255,255,0.6); }
+  .term-err { color: #ff6b6b; }
+  .term-input-row { display: flex; align-items: center; margin-top: 4px; }
+  #term-input { background: transparent; border: none; outline: none; color: #fff; font-family: 'Space Mono', monospace; font-size: 13px; flex: 1; }
+  .term-cursor { display: inline-block; width: 8px; height: 14px; background: #6bcb77; animation: blink 1s step-end infinite; }
+  @keyframes blink { 50%{opacity:0} }
+
+  /* ===== SPOTLIGHT ===== */
+  #spotlight {
+    position: fixed; inset: 0; z-index: 8000;
+    display: none; align-items: flex-start; justify-content: center;
+    padding-top: 15vh;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+  }
+  .spotlight-box { width: 560px; }
+  #spotlight-input {
+    width: 100%; padding: 16px 20px;
+    background: rgba(40,40,55,0.97);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 14px;
+    color: #fff; font-size: 20px; outline: none;
+    font-family: 'SF Pro Display', sans-serif;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+  }
+  .spotlight-results { margin-top: 8px; background: rgba(40,40,55,0.97); border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
+  .sr-item { padding: 12px 20px; display: flex; gap: 12px; align-items: center; cursor: pointer; transition: background 0.1s; font-size: 14px; color: rgba(255,255,255,0.85); }
+  .sr-item:hover { background: rgba(255,255,255,0.08); }
+  .sr-icon { font-size: 24px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ===== LOCK SCREEN ===== -->
+<div id="lockscreen" onclick="unlock()">
+  <div class="lock-time" id="lock-time">12:00</div>
+  <div class="lock-date" id="lock-date">Loading...</div>
+  <div class="birthday-msg">🎂 Happy Birthday, Karanji! 🎂</div>
+  <div class="lock-hint">CLICK TO UNLOCK</div>
+</div>
+
+<!-- ===== DESKTOP ===== -->
+<div id="desktop">
+  <div id="wallpaper"></div>
+
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <div class="logo">🍎 KaranjiOS</div>
+    <div class="center" id="active-app-name">Finder</div>
+    <div class="right">
+      <span>🔋 100%</span>
+      <span>📶 KaranjiNet</span>
+      <span>🔊</span>
+      <span id="clock-top">12:00 PM</span>
+    </div>
+  </div>
+
+  <!-- DESKTOP ICONS -->
+  <div id="icons-grid">
+    <div class="desktop-icon" ondblclick="openWindow('finder-window','Finder')">
+      <div class="icon-emoji">📁</div>
+      <div class="icon-label">Karanji's Files</div>
+    </div>
+    <div class="desktop-icon" ondblclick="openWindow('notes-window','Important Notes')">
+      <div class="icon-emoji">📝</div>
+      <div class="icon-label">Secret Notes</div>
+    </div>
+    <div class="desktop-icon" ondblclick="openWindow('browser-window','KaranjiFox')">
+      <div class="icon-emoji">🦊</div>
+      <div class="icon-label">KaranjiFox</div>
+    </div>
+    <div class="desktop-icon" ondblclick="openWindow('photos-window','Memories')">
+      <div class="icon-emoji">🖼️</div>
+      <div class="icon-label">Our Memories</div>
+    </div>
+    <div class="desktop-icon" ondblclick="openWindow('music-window','KaranjiTunes')">
+      <div class="icon-emoji">🎵</div>
+      <div class="icon-label">KaranjiTunes</div>
+    </div>
+    <div class="desktop-icon" ondblclick="openWindow('terminal-window','Terminal')">
+      <div class="icon-emoji">🖥️</div>
+      <div class="icon-label">B'day Terminal</div>
+    </div>
+    <div class="desktop-icon" ondblclick="openWindow('about-window','About Karanji')">
+      <div class="icon-emoji">🧑‍💻</div>
+      <div class="icon-label">About Karanji</div>
+    </div>
+    <div class="desktop-icon" ondblclick="openWindow('settings-window','Settings')">
+      <div class="icon-emoji">⚙️</div>
+      <div class="icon-label">Settings</div>
+    </div>
+    <div class="desktop-icon" ondblclick="showBdayModal()">
+      <div class="icon-emoji">🎁</div>
+      <div class="icon-label">Gift from Me</div>
+    </div>
+    <div class="desktop-icon">
+      <div class="icon-emoji">🗑️</div>
+      <div class="icon-label">Excuses Bin</div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATION CONTAINER -->
+  <div id="notification-container"></div>
+
+  <!-- DOCK -->
+  <div id="dock">
+    <div class="dock-icon" data-label="Finder" ondblclick="openWindow('finder-window','Finder')" style="background:linear-gradient(135deg,#2196f3,#21cbf3)">📁</div>
+    <div class="dock-icon" data-label="Notes" ondblclick="openWindow('notes-window','Important Notes')" style="background:linear-gradient(135deg,#f7971e,#ffd200)">📝</div>
+    <div class="dock-icon" data-label="Music" ondblclick="openWindow('music-window','KaranjiTunes')" style="background:linear-gradient(135deg,#f953c6,#b91d73)">🎵</div>
+    <div class="dock-icon" data-label="Browser" ondblclick="openWindow('browser-window','KaranjiFox')" style="background:linear-gradient(135deg,#ff6b6b,#ffd93d)">🦊</div>
+    <div class="dock-icon" data-label="Photos" ondblclick="openWindow('photos-window','Memories')" style="background:linear-gradient(135deg,#56ab2f,#a8e063)">🖼️</div>
+    <div class="dock-sep"></div>
+    <div class="dock-icon" data-label="Terminal" ondblclick="openWindow('terminal-window','Terminal')" style="background:#1a1a1a">🖥️</div>
+    <div class="dock-icon" data-label="Gift 🎁" ondblclick="showBdayModal()" style="background:linear-gradient(135deg,#ff6b6b,#ffd93d)">🎁</div>
+  </div>
+
+  <!-- CONTEXT MENU -->
+  <div id="context-menu">
+    <div class="cm-item" onclick="document.getElementById('context-menu').style.display='none'">📋 New Folder <span class="cm-key">⌘N</span></div>
+    <div class="cm-item" onclick="document.getElementById('context-menu').style.display='none'">🎨 Change Wallpaper</div>
+    <div class="cm-sep"></div>
+    <div class="cm-item" onclick="showBdayModal();document.getElementById('context-menu').style.display='none'">🎂 Happy Birthday!</div>
+    <div class="cm-item" onclick="document.getElementById('context-menu').style.display='none'">🧹 Clean Desktop <span class="cm-key">⌘K</span></div>
+    <div class="cm-sep"></div>
+    <div class="cm-item" onclick="document.getElementById('context-menu').style.display='none'">ℹ️ About KaranjiOS</div>
+  </div>
+
+  <!-- SPOTLIGHT -->
+  <div id="spotlight" onclick="closeSpotlight(event)">
+    <div class="spotlight-box">
+      <input id="spotlight-input" placeholder="🔍  Search KaranjiOS..." oninput="spotlightSearch(this.value)" onkeydown="if(event.key==='Escape')closeSpotlight(event)" autofocus />
+      <div class="spotlight-results" id="spotlight-results"></div>
+    </div>
+  </div>
+
+  <!-- ===== WINDOWS ===== -->
+
+  <!-- FINDER -->
+  <div class="window" id="finder-window">
+    <div class="window-titlebar" onmousedown="startDrag(event,'finder-window')">
+      <div class="traffic t-close" onclick="closeWindow('finder-window')"></div>
+      <div class="traffic t-min" onclick="minimizeWindow('finder-window')"></div>
+      <div class="traffic t-max"></div>
+      <div class="window-title">📁 Karanji's Files</div>
+    </div>
+    <div class="window-body" style="padding:0">
+      <div class="finder-sidebar">
+        <div class="finder-sidebar-item active" onclick="loadFolder('home')">🏠 Home</div>
+        <div class="finder-sidebar-item" onclick="loadFolder('secrets')">🤫 Dark Secrets</div>
+        <div class="finder-sidebar-item" onclick="loadFolder('projects')">💻 Projects</div>
+        <div class="finder-sidebar-item" onclick="loadFolder('memes')">😂 Meme Stash</div>
+        <div class="finder-sidebar-item" onclick="loadFolder('bday')">🎂 Birthday</div>
+        <div class="finder-sidebar-item" onclick="loadFolder('trash')">🗑️ Excuses Bin</div>
+      </div>
+      <div class="finder-main">
+        <div class="finder-path" id="finder-path">/ Home /</div>
+        <div class="finder-files" id="finder-files"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="window" id="notes-window">
+    <div class="window-titlebar" onmousedown="startDrag(event,'notes-window')">
+      <div class="traffic t-close" onclick="closeWindow('notes-window')"></div>
+      <div class="traffic t-min"></div>
+      <div class="traffic t-max"></div>
+      <div class="window-title">📝 Secret Notes</div>
+    </div>
+    <div class="window-body" style="padding:0">
+      <div class="notes-body">
+        <div class="notes-title">🔐 Highly Classified Notes</div>
+        <div class="notes-content">📌 To-Do Today:
+• Wake up (somehow done ✅)
+• Try to act like a normal person ❌
+• Send 200 WhatsApp msgs to birthday boy ✅
+• Eat cake before anyone else ✅
+• Pretend I remembered without a reminder ✅
+
+📌 Life Goals:
+• Sleep 10 hours a day (in progress...)
+• Watch every series on Netflix ✅ (lol)
+• Become a rockstar dev 🚀
+• Actually clean room (2027 maybe)
+
+📌 Things Karanji is best at:
+• Roasting friends 😂
+• Vibing at 2AM 🌙
+• Pretending to study 📚
+• Actually being awesome 🎉
+
+📌 Note from your best friend:
+  You are one of those rare humans
+  who makes everyone around them
+  feel like the party started. 
+  Happy Birthday you legend! 🥳</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BROWSER -->
+  <div class="window" id="browser-window">
+    <div class="window-titlebar" onmousedown="startDrag(event,'browser-window')">
+      <div class="traffic t-close" onclick="closeWindow('browser-window')"></div>
+      <div class="traffic t-min"></div>
+      <div class="traffic t-max"></div>
+      <div class="window-title">🦊 KaranjiFox Browser</div>
+    </div>
+    <div class="window-body">
+      <div class="browser-bar">
+        <span style="font-size:18px;cursor:pointer">←</span>
+        <span style="font-size:18px;cursor:pointer">→</span>
+        <span style="font-size:18px;cursor:pointer">↻</span>
+        <div class="browser-url">🔒 karanjios.birthday.fun/wishes</div>
+      </div>
+      <div class="browser-content">
+        <div style="font-size:50px;margin-bottom:12px">🎉</div>
+        <div class="bday-web-header">Welcome to Karanji's Birthday HQ</div>
+        <div style="color:rgba(255,255,255,0.6);font-size:14px;margin:12px 0">Visitor Count: <strong style="color:#ffd93d">9,99,999</strong> (all your fans)</div>
+        <div style="margin:20px 0;padding:16px;background:rgba(255,255,255,0.05);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.8);line-height:1.8">
+          🏆 #1 Most Visited Site on KaranjiNet<br>
+          📰 Breaking: Scientists confirm Karanji is <em>too cool</em> for his own good<br>
+          🎂 Cake consumption up 300% in your area<br>
+          📱 69 new notifications from your future fans
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;font-size:13px">
+          <span style="background:rgba(255,107,107,0.2);border:1px solid rgba(255,107,107,0.4);padding:6px 14px;border-radius:20px;cursor:pointer">🎵 Bday Playlist</span>
+          <span style="background:rgba(77,150,255,0.2);border:1px solid rgba(77,150,255,0.4);padding:6px 14px;border-radius:20px;cursor:pointer">🎂 Order Cake</span>
+          <span style="background:rgba(107,203,119,0.2);border:1px solid rgba(107,203,119,0.4);padding:6px 14px;border-radius:20px;cursor:pointer">📸 View Roasts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHOTOS -->
+  <div class="window" id="photos-window">
+    <div class="window-titlebar" onmousedown="startDrag(event,'photos-window')">
+      <div class="traffic t-close" onclick="closeWindow('photos-window')"></div>
+      <div class="traffic t-min"></div>
+      <div class="traffic t-max"></div>
+      <div class="window-title">🖼️ Our Memories</div>
+    </div>
+    <div class="window-body">
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px">📅 Best moments with your crazy friends</div>
+      <div class="photos-grid" id="photos-grid"></div>
+    </div>
+  </div>
+
+  <!-- MUSIC -->
+  <div class="window" id="music-window">
+    <div class="window-titlebar" onmousedown="startDrag(event,'music-window')">
+      <div class="traffic t-close" onclick="closeWindow('music-window')"></div>
+      <div class="traffic t-min"></div>
+      <div class="traffic t-max"></div>
+      <div class="window-title">🎵 KaranjiTunes</div>
+    </div>
+    <div class="window-body" style="text-align:center">
+      <div class="music-art" id="music-art">🎧</div>
+      <div class="music-title" id="music-title">Birthday Anthem (feat. Me)</div>
+      <div class="music-artist" id="music-artist">Karanji & The Birthday Squad</div>
+      <div class="music-progress" onclick="seekMusic(event)">
+        <div class="music-fill" id="music-fill"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.4);margin-top:-10px;margin-bottom:10px">
+        <span id="music-curr">1:12</span><span id="music-total">3:33</span>
+      </div>
+      <div class="music-controls">
+        <div class="mc-btn" onclick="prevTrack()">⏮</div>
+        <div class="mc-btn mc-play" id="play-btn" onclick="togglePlay()">▶️</div>
+        <div class="mc-btn" onclick="nextTrack()">⏭</div>
+      </div>
+      <div style="margin-top:16px;font-size:12px;color:rgba(255,255,255,0.3)">🔀 Shuffle  🔁 Repeat  ❤️ Liked</div>
+    </div>
+  </div>
+
+  <!-- TERMINAL -->
+  <div class="window" id="terminal-window">
+    <div class="window-titlebar" onmousedown="startDrag(event,'terminal-window')">
+      <div class="traffic t-close" onclick="closeWindow('terminal-window')"></div>
+      <div class="traffic t-min"></div>
+      <div class="traffic t-max"></div>
+      <div class="window-title">🖥️ Terminal — karanji@KaranjiOS</div>
+    </div>
+    <div class="window-body" style="padding:0">
+      <div class="terminal-body" id="terminal-body">
+        <div class="term-line"><span class="term-out">KaranjiOS v69.0 — Birthday Edition 🎂</span></div>
+        <div class="term-line"><span class="term-out">Type 'help' for available commands</span></div>
+        <div class="term-line"> </div>
+        <div class="term-input-row">
+          <span class="term-prompt">karanji@KaranjiOS ~ $&nbsp;</span>
+          <input type="text" id="term-input" onkeydown="termKeyDown(event)" autocomplete="off" autocorrect="off" spellcheck="false" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT KARANJI -->
+  <div class="window" id="about-window">
+    <div class="window-titlebar" onmousedown="startDrag(event,'about-window')">
+      <div class="traffic t-close" onclick="closeWindow('about-window')"></div>
+      <div class="traffic t-min"></div>
+      <div class="traffic t-max"></div>
+      <div class="window-title">🧑‍💻 About Karanji</div>
+    </div>
+    <div class="window-body" style="padding:0;overflow-y:auto">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <!-- SWAP THIS SRC WITH YOUR FRIEND'S PHOTO URL -->
+          <span style="font-size:50px">🧑‍💻</span>
+        </div>
+        <div class="profile-name">Karanji</div>
+        <div class="profile-role">🎂 Chief Birthday Boy · Legend</div>
+        <div class="profile-stats">
+          <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">Vibes</div></div>
+          <div class="stat-item"><div class="stat-num">69</div><div class="stat-label">Birthday</div></div>
+          <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Awesome</div></div>
+        </div>
+      </div>
+      <div class="profile-bio">
+        <div class="bio-row"><div class="bio-key">Full Name</div><div class="bio-val">Karanji The Great 👑</div></div>
+        <div class="bio-row"><div class="bio-key">OS Version</div><div class="bio-val">KaranjiOS 69.0 🎂</div></div>
+        <div class="bio-row"><div class="bio-key">Status</div><div class="bio-val">🟢 Partying Hard</div></div>
+        <div class="bio-row"><div class="bio-key">CPU</div><div class="bio-val">Powered by Cake & Chaos ⚡</div></div>
+        <div class="bio-row"><div class="bio-key">Memory</div><div class="bio-val">128 GB of Memes 😂</div></div>
+        <div class="bio-row"><div class="bio-key">Network</div><div class="bio-val">KaranjiNet 6G 🔗</div></div>
+        <div class="bio-row"><div class="bio-key">Serial No.</div><div class="bio-val">BDAY-2025-LEGEND</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="window" id="settings-window">
+    <div class="window-titlebar" onmousedown="startDrag(event,'settings-window')">
+      <div class="traffic t-close" onclick="closeWindow('settings-window')"></div>
+      <div class="traffic t-min"></div>
+      <div class="traffic t-max"></div>
+      <div class="window-title">⚙️ KaranjiOS Settings</div>
+    </div>
+    <div class="window-body">
+      <div class="settings-row"><span>🎂 Birthday Mode</span><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+      <div class="settings-row"><span>🎵 Auto-play Birthday Song</span><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+      <div class="settings-row"><span>🔔 Notifications from Best Friend</span><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+      <div class="settings-row"><span>😴 Sleep Mode</span><div class="toggle off" onclick="this.classList.toggle('off')"></div></div>
+      <div class="settings-row"><span>🎊 Confetti Level</span><span class="settings-val">Maximum 🎉</span></div>
+      <div class="settings-row"><span>📱 Friend Notifications</span><span class="settings-val">99+ pending</span></div>
+      <div class="settings-row"><span>🍰 Cake Counter</span><span class="settings-val">3 slices and counting</span></div>
+      <div class="settings-row"><span>🧠 Seriousness Mode</span><div class="toggle off" onclick="this.classList.toggle('off')"></div></div>
+      <div class="settings-row"><span>KaranjiOS Version</span><span class="settings-val">v69.0 Birthday Edition</span></div>
+    </div>
+  </div>
+
+  <!-- BIRTHDAY MODAL -->
+  <div id="bday-modal">
+    <div class="bday-card" id="bday-card">
+      <div class="bday-emoji">🎂</div>
+      <div class="bday-title">Happy Birthday, Karanji! 🎉</div>
+      <div class="bday-text">
+        Hey you absolute legend! 🥳<br><br>
+        On this glorious day, KaranjiOS was officially launched into the world — and honestly, the world has been way more fun ever since. 🌍✨<br><br>
+        You are the kind of friend who makes everything more interesting, funnier, and 10x more chaotic. And I wouldn't have it any other way. 😂❤️<br><br>
+        <strong style="color:#ffd93d">May your day be as legendary as you are!</strong><br>
+        — Your best friend 🫶
+      </div>
+      <button class="bday-close" onclick="closeBdayModal()">🎁 Close Gift</button>
+    </div>
+  </div>
+
+</div><!-- end #desktop -->
+
+<script>
+// ===== CLOCK =====
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours(), m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hh = h % 12 || 12;
+  const mm = String(m).padStart(2,'0');
+  const timeStr = `${hh}:${mm} ${ampm}`;
+  document.getElementById('clock-top').textContent = timeStr;
+  document.getElementById('lock-time').textContent = `${hh}:${mm}`;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('lock-date').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ===== UNLOCK =====
+function unlock() {
+  const ls = document.getElementById('lockscreen');
+  ls.style.opacity = '0';
+  setTimeout(() => {
+    ls.style.display = 'none';
+    document.getElementById('desktop').style.display = 'block';
+    setTimeout(() => { showBdayModal(); }, 800);
+    scheduleNotifications();
+  }, 600);
+}
+
+// ===== WINDOW MANAGEMENT =====
+function openWindow(id, title) {
+  const w = document.getElementById(id);
+  w.style.display = 'block';
+  w.classList.add('active');
+  document.getElementById('active-app-name').textContent = title;
+  if (id === 'finder-window') loadFolder('home');
+  if (id === 'photos-window') loadPhotos();
+  if (id === 'terminal-window') document.getElementById('term-input').focus();
+}
+function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+function minimizeWindow(id) { document.getElementById(id).style.display = 'none'; }
+
+// ===== DRAG =====
+function startDrag(e, id) {
+  if (e.target.classList.contains('traffic')) return;
+  const w = document.getElementById(id);
+  const startX = e.clientX - w.offsetLeft;
+  const startY = e.clientY - w.offsetTop;
+  w.classList.add('active');
+  function onMove(e) {
+    w.style.left = Math.max(0, e.clientX - startX) + 'px';
+    w.style.top = Math.max(30, e.clientY - startY) + 'px';
+  }
+  function onUp() {
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onUp);
+  }
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+}
+
+// ===== CONTEXT MENU =====
+document.getElementById('desktop').addEventListener('contextmenu', e => {
+  e.preventDefault();
+  const cm = document.getElementById('context-menu');
+  cm.style.display = 'block';
+  cm.style.left = Math.min(e.clientX, window.innerWidth - 220) + 'px';
+  cm.style.top = Math.min(e.clientY, window.innerHeight - 200) + 'px';
+});
+document.addEventListener('click', () => {
+  document.getElementById('context-menu').style.display = 'none';
+});
+
+// ===== BIRTHDAY MODAL =====
+function showBdayModal() {
+  const modal = document.getElementById('bday-modal');
+  modal.style.display = 'flex';
+  addConfetti();
+}
+function closeBdayModal() {
+  document.getElementById('bday-modal').style.display = 'none';
+}
+function addConfetti() {
+  const card = document.getElementById('bday-card');
+  const items = ['🎉','🎂','🎈','🎁','⭐','🌟','✨','🥳','🎊','❤️'];
+  for (let i = 0; i < 12; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.textContent = items[Math.floor(Math.random()*items.length)];
+    c.style.left = Math.random()*100 + '%';
+    c.style.animationDelay = Math.random()*3 + 's';
+    c.style.animationDuration = (2 + Math.random()*2) + 's';
+    card.appendChild(c);
+  }
+}
+
+// ===== NOTIFICATIONS =====
+const notifications = [
+  { app: 'BFF Messenger 💬', title: 'Your Best Friend', msg: 'HAPPY BIRTHDAY YOU LEGEND!! 🎂🥳 I made you an OS lol', delay: 2000, emoji: '🤩' },
+  { app: 'KaranjiMail 📧', title: 'Birthday HQ', msg: 'You have 69 unread birthday wishes. Inbox: DESTROYED 💥', delay: 5000, emoji: '📧' },
+  { app: 'Cake Delivery 🍰', title: 'Order #BDAY-2025', msg: '6-layer rainbow cake is OUT FOR DELIVERY! 🚗💨', delay: 9000, emoji: '🎂' },
+  { app: 'KaranjiHealth 💪', title: 'Daily Reminder', msg: 'Goal: Eat unlimited cake today. Status: ✅ Already achieved', delay: 14000, emoji: '💪' },
+  { app: 'BFF Messenger 💬', title: 'Your Best Friend', msg: 'Bro open the Gift app on your desktop!! 🎁👀', delay: 19000, emoji: '😂' },
+  { app: 'KaranjiBank 🏦', title: 'New Transaction', msg: 'Memory bank credited with: 1 legendary birthday 🎉', delay: 25000, emoji: '💰' },
+];
+
+function scheduleNotifications() {
+  notifications.forEach(n => {
+    setTimeout(() => showNotification(n), n.delay);
+  });
+}
+
+function showNotification(n) {
+  const container = document.getElementById('notification-container');
+  const el = document.createElement('div');
+  el.className = 'notif';
+  el.innerHTML = `
+    <div class="notif-avatar-emoji">${n.emoji}</div>
+    <div class="notif-body">
+      <div class="notif-app">${n.app}</div>
+      <div class="notif-title">${n.title}</div>
+      <div class="notif-msg">${n.msg}</div>
+    </div>
+    <div class="notif-time">now</div>
+  `;
+  el.onclick = () => {
+    el.classList.add('hide');
+    setTimeout(() => el.remove(), 300);
+  };
+  container.appendChild(el);
+  requestAnimationFrame(() => { requestAnimationFrame(() => { el.classList.add('show'); }); });
+  setTimeout(() => {
+    if (el.parentNode) {
+      el.classList.add('hide');
+      setTimeout(() => el.remove(), 300);
+    }
+  }, 6000);
+}
+
+// ===== FINDER =====
+const folders = {
+  home: {
+    path: '/ Karanji / Home /',
+    files: [
+      {icon:'📁',name:'Secret Plans'},
+      {icon:'🎵',name:'Bday Playlist'},
+      {icon:'😂',name:'Roast Collection'},
+      {icon:'📸',name:'Evidence Folder'},
+      {icon:'💌',name:'Best Friend Letter'},
+      {icon:'🧠',name:'Brain Backup'},
+      {icon:'☕',name:'Coffee Diary'},
+      {icon:'🎮',name:'Win Streaks.log'},
+    ]
+  },
+  secrets: {
+    path: '/ Karanji / Dark Secrets /',
+    files: [
+      {icon:'🤫',name:'Can\'t tell you'},
+      {icon:'🔐',name:'Super Locked'},
+      {icon:'😳',name:'2AM Thoughts'},
+      {icon:'🙈',name:'Do Not Open'},
+    ]
+  },
+  projects: {
+    path: '/ Karanji / Projects /',
+    files: [
+      {icon:'🚀',name:'World Domination v1'},
+      {icon:'💻',name:'App That Prints Money'},
+      {icon:'🤖',name:'AI Best Friend'},
+      {icon:'📱',name:'KaranjiOS Source Code'},
+      {icon:'🎨',name:'Meme Generator Pro'},
+    ]
+  },
+  memes: {
+    path: '/ Karanji / Meme Stash /',
+    files: [
+      {icon:'😂',name:'Dank Memes Vol.1'},
+      {icon:'🤣',name:'Dank Memes Vol.2'},
+      {icon:'💀',name:'Too Dank to Open'},
+      {icon:'🫡',name:'Wholesome Folder'},
+      {icon:'🎭',name:'Reaction Pack'},
+      {icon:'📦',name:'Cringe Archive'},
+    ]
+  },
+  bday: {
+    path: '/ Karanji / Birthday /',
+    files: [
+      {icon:'🎂',name:'Cake_Menu.pdf'},
+      {icon:'🎁',name:'Wishlist_2025.doc'},
+      {icon:'🎉',name:'Party_Plan.xlsx'},
+      {icon:'💌',name:'From_Your_BFF.txt'},
+      {icon:'🥳',name:'Bday_Memories.zip'},
+    ]
+  },
+  trash: {
+    path: '/ Karanji / Excuses Bin /',
+    files: [
+      {icon:'🗑️',name:'"I was busy"'},
+      {icon:'🗑️',name:'"I forgot"'},
+      {icon:'🗑️',name:'"Just 5 more min"'},
+      {icon:'🗑️',name:'"Tomorrow for sure"'},
+    ]
+  }
+};
+function loadFolder(key) {
+  const f = folders[key];
+  document.getElementById('finder-path').textContent = f.path;
+  document.querySelectorAll('.finder-sidebar-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('finder-files').innerHTML = f.files.map(file =>
+    `<div class="finder-file" ondblclick="fileAction('${file.name}')">
+      <div class="ff-icon">${file.icon}</div>
+      <div class="ff-name">${file.name}</div>
+    </div>`
+  ).join('');
+}
+function fileAction(name) {
+  if (name === 'From_Your_BFF.txt') showBdayModal();
+  else if (name === '"I was busy"' || name === '"I forgot"') alert('🗑️ You can\'t open this — it\'s already been thrown away by karma.');
+  else alert(`📄 Opening "${name}"...\n\nContent: [CLASSIFIED - For Karanji's Eyes Only] 👀`);
+}
+
+// ===== PHOTOS =====
+function loadPhotos() {
+  const photos = [
+    {emoji:'😂',bg:'linear-gradient(135deg,#667eea,#764ba2)',caption:'That Time 😂'},
+    {emoji:'🎉',bg:'linear-gradient(135deg,#f093fb,#f5576c)',caption:'THE Party'},
+    {emoji:'🌙',bg:'linear-gradient(135deg,#4facfe,#00f2fe)',caption:'2AM Squad'},
+    {emoji:'🚀',bg:'linear-gradient(135deg,#43e97b,#38f9d7)',caption:'Big Plans'},
+    {emoji:'🎂',bg:'linear-gradient(135deg,#fa709a,#fee140)',caption:'Last Bday'},
+    {emoji:'🤝',bg:'linear-gradient(135deg,#a18cd1,#fbc2eb)',caption:'Day 1s'},
+    {emoji:'🌊',bg:'linear-gradient(135deg,#84fab0,#8fd3f4)',caption:'That Trip'},
+    {emoji:'💯',bg:'linear-gradient(135deg,#f7971e,#ffd200)',caption:'Always 100'},
+    {emoji:'🎭',bg:'linear-gradient(135deg,#ee0979,#ff6a00)',caption:'Us, always'},
+  ];
+  document.getElementById('photos-grid').innerHTML = photos.map(p =>
+    `<div class="photo-item" style="background:${p.bg}">
+      <div style="font-size:48px">${p.emoji}</div>
+      <div class="photo-caption">${p.caption}</div>
+    </div>`
+  ).join('');
+}
+
+// ===== MUSIC =====
+const tracks = [
+  {title:'Birthday Anthem (feat. Me)', artist:'Karanji & The Birthday Squad', emoji:'🎂'},
+  {title:'Chaos Mode Activated', artist:'The Birthday Legends', emoji:'🎉'},
+  {title:'Best Friend Energy', artist:'Karanji ft. Your BFF', emoji:'❤️'},
+  {title:'2AM Vibes', artist:'Night Owl Records', emoji:'🌙'},
+  {title:'King Energy', artist:'Karanji Solo', emoji:'👑'},
+];
+let trackIdx = 0, isPlaying = false, progress = 35;
+function togglePlay() {
+  isPlaying = !isPlaying;
+  document.getElementById('play-btn').textContent = isPlaying ? '⏸️' : '▶️';
+  document.getElementById('music-art').classList.toggle('playing', isPlaying);
+  if (isPlaying) tickMusic();
+}
+function tickMusic() {
+  if (!isPlaying) return;
+  progress = Math.min(100, progress + 0.3);
+  document.getElementById('music-fill').style.width = progress + '%';
+  const total = 213, curr = Math.floor(total * progress / 100);
+  document.getElementById('music-curr').textContent = Math.floor(curr/60)+':'+ String(curr%60).padStart(2,'0');
+  if (progress >= 100) { nextTrack(); return; }
+  setTimeout(tickMusic, 300);
+}
+function nextTrack() {
+  trackIdx = (trackIdx + 1) % tracks.length;
+  loadTrack();
+}
+function prevTrack() {
+  trackIdx = (trackIdx - 1 + tracks.length) % tracks.length;
+  loadTrack();
+}
+function loadTrack() {
+  const t = tracks[trackIdx];
+  document.getElementById('music-title').textContent = t.title;
+  document.getElementById('music-artist').textContent = t.artist;
+  document.getElementById('music-art').textContent = t.emoji;
+  progress = 0;
+  document.getElementById('music-fill').style.width = '0%';
+  if (isPlaying) tickMusic();
+}
+function seekMusic(e) {
+  const bar = e.currentTarget;
+  progress = (e.offsetX / bar.offsetWidth) * 100;
+  document.getElementById('music-fill').style.width = progress + '%';
+}
+
+// ===== TERMINAL =====
+const termCmds = {
+  help: () => [
+    '<span class="term-out">Available commands:</span>',
+    '<span class="term-out">  whoami     — show system info</span>',
+    '<span class="term-out">  wish       — birthday wish</span>',
+    '<span class="term-out">  ls         — list files</span>',
+    '<span class="term-out">  friends    — list best friends</span>',
+    '<span class="term-out">  cake       — important info</span>',
+    '<span class="term-out">  roast      — get roasted</span>',
+    '<span class="term-out">  sudo party — initiate party</span>',
+    '<span class="term-out">  clear      — clear terminal</span>',
+  ],
+  whoami: () => ['<span class="term-out">karanji — Birthday Boy, Legend, Chief Vibe Officer</span>','<span class="term-out">KaranjiOS v69.0 🎂 | Uptime: 1 Birthday</span>'],
+  wish: () => ['<span class="term-out">🎂 HAPPY BIRTHDAY KARANJI!! 🎂</span>','<span class="term-out">You are officially one year more awesome.</span>','<span class="term-out">System vibes: MAXIMUM 📈</span>'],
+  ls: () => ['<span class="term-out">drwxr  Memes/   SecretPlans/   ChaosEngine/</span>','<span class="term-out">-rw-r  bday.sh  legendary.exe  cake.mp4</span>'],
+  friends: () => ['<span class="term-out">Best Friends: [Your Name] ← That\'s me! 🫶</span>','<span class="term-out">Friend Count: 1 (quality over quantity)</span>','<span class="term-out">Loyalty Level: ∞</span>'],
+  cake: () => ['<span class="term-out">Cake status: 🎂 x 3 slices consumed</span>','<span class="term-out">Recommended: eat more. System requires it.</span>','<span class="term-out">WARNING: sharing may cause sadness</span>'],
+  roast: () => {
+    const roasts = [
+      'Your code has more bugs than a jungle at night 🪲',
+      'You sleep so much, even your alarm gave up 😴',
+      'Your WiFi password is still "password123" isn\'t it 🤦',
+      'You replied "on the way" from your bed didn\'t you 😂',
+      'Your playlist is 90% the same 3 songs 🎵',
+    ];
+    return [`<span class="term-err">🔥 ROAST: ${roasts[Math.floor(Math.random()*roasts.length)]}</span>`];
+  },
+  'sudo party': () => ['<span class="term-out">[sudo] password for karanji: ••••••••</span>','<span class="term-out">🎉 PARTY PROTOCOL INITIATED</span>','<span class="term-out">Loading: confetti.sh ... ✅</span>','<span class="term-out">Loading: cake.exe ...... ✅</span>','<span class="term-out">Loading: vibes.dll ..... ✅</span>','<span class="term-out">PARTY MODE: MAXIMUM 🥳</span>'],
+  clear: () => { document.getElementById('terminal-body').innerHTML = '<div class="term-input-row"><span class="term-prompt">karanji@KaranjiOS ~ $&nbsp;</span><input type="text" id="term-input" onkeydown="termKeyDown(event)" autocomplete="off" autocorrect="off" spellcheck="false" /></div>'; document.getElementById('term-input').focus(); return null; },
+};
+function termKeyDown(e) {
+  if (e.key !== 'Enter') return;
+  const input = document.getElementById('term-input');
+  const cmd = input.value.trim().toLowerCase();
+  const body = document.getElementById('terminal-body');
+  const row = input.parentElement;
+  // freeze current line
+  row.innerHTML = `<span class="term-prompt">karanji@KaranjiOS ~ $&nbsp;</span><span class="term-cmd">${cmd}</span>`;
+  // output
+  const fn = termCmds[cmd];
+  if (fn) {
+    const result = fn();
+    if (result) result.forEach(line => { const d = document.createElement('div'); d.className='term-line'; d.innerHTML=line; body.appendChild(d); });
+  } else if (cmd) {
+    const d = document.createElement('div'); d.className='term-line';
+    d.innerHTML=`<span class="term-err">Command not found: ${cmd}. Type 'help'.</span>`;
+    body.appendChild(d);
+  }
+  // new input row
+  if (cmd !== 'clear') {
+    const newRow = document.createElement('div');
+    newRow.className = 'term-input-row';
+    newRow.innerHTML = '<span class="term-prompt">karanji@KaranjiOS ~ $&nbsp;</span><input type="text" id="term-input" onkeydown="termKeyDown(event)" autocomplete="off" autocorrect="off" spellcheck="false" />';
+    body.appendChild(newRow);
+    document.getElementById('term-input').focus();
+  }
+  body.scrollTop = body.scrollHeight;
+}
+
+// ===== SPOTLIGHT =====
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === ' ') {
+    e.preventDefault();
+    const sp = document.getElementById('spotlight');
+    if (sp.style.display === 'flex') { sp.style.display = 'none'; }
+    else { sp.style.display = 'flex'; document.getElementById('spotlight-input').value=''; document.getElementById('spotlight-results').innerHTML=''; document.getElementById('spotlight-input').focus(); }
+  }
+});
+function closeSpotlight(e) {
+  if (e.target === document.getElementById('spotlight')) document.getElementById('spotlight').style.display = 'none';
+}
+const spotlightItems = [
+  {icon:'📁',name:'Karanji\'s Files',action:()=>openWindow('finder-window','Finder')},
+  {icon:'📝',name:'Secret Notes',action:()=>openWindow('notes-window','Notes')},
+  {icon:'🦊',name:'KaranjiFox Browser',action:()=>openWindow('browser-window','Browser')},
+  {icon:'🎵',name:'KaranjiTunes Music',action:()=>openWindow('music-window','Music')},
+  {icon:'🖥️',name:'Birthday Terminal',action:()=>openWindow('terminal-window','Terminal')},
+  {icon:'🎁',name:'Gift from Best Friend',action:()=>showBdayModal()},
+  {icon:'🧑‍💻',name:'About Karanji',action:()=>openWindow('about-window','About')},
+  {icon:'⚙️',name:'Settings',action:()=>openWindow('settings-window','Settings')},
+];
+function spotlightSearch(q) {
+  const res = document.getElementById('spotlight-results');
+  if (!q) { res.innerHTML = ''; return; }
+  const hits = spotlightItems.filter(i => i.name.toLowerCase().includes(q.toLowerCase()));
+  res.innerHTML = hits.map((i,idx) =>
+    `<div class="sr-item" onclick="spotlightItems[${spotlightItems.indexOf(i)}].action();document.getElementById('spotlight').style.display='none'">
+      <span class="sr-icon">${i.icon}</span>${i.name}
+    </div>`
+  ).join('') || '<div class="sr-item" style="color:rgba(255,255,255,0.3)">No results found...</div>';
+}
+</script>
+</body>
+</html>
