@@ -18,8 +18,8 @@
 :root {
   --font: "Inter", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   --mono: "JetBrains Mono", "Cascadia Code", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --accent: #3b82f6;
-  --accent-rgb: 59,130,246;
+  --accent: #3d7bfd;
+  --accent-rgb: 61,123,253;
   --accent-fg: #fff;
   --radius-s: 6px;
   --radius: 8px;
@@ -28,51 +28,51 @@
   --ease: cubic-bezier(.2,.8,.2,1);
   --dur: 180ms;
   --fs: 13px;
-  --danger: #ef4444;
-  --success: #22c55e;
-  --warning: #f59e0b;
+  --danger: #e0524b;
+  --success: #2fa36b;
+  --warning: #d9a21b;
 }
 html[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #16171a;
-  --surface: #1f2024;
-  --surface-2: #26272c;
-  --surface-3: #2e3036;
-  --sidebar: #1b1c20;
-  --glass: rgba(30,31,36,.78);
-  --glass-strong: rgba(28,29,33,.92);
-  --border: rgba(255,255,255,.08);
-  --border-strong: rgba(255,255,255,.14);
-  --text: #ececef;
-  --text-2: #a4a6ad;
-  --text-3: #6f727a;
-  --hover: rgba(255,255,255,.06);
-  --active: rgba(255,255,255,.1);
-  --shadow: 0 18px 50px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.3);
-  --shadow-s: 0 6px 20px rgba(0,0,0,.4);
-  --input: #141518;
-  --scroll: rgba(255,255,255,.16);
+  --bg: #0f141d;
+  --surface: #161c26;
+  --surface-2: #1b222e;
+  --surface-3: #242c3a;
+  --sidebar: #131924;
+  --glass: rgba(20,26,38,.74);
+  --glass-strong: rgba(22,28,40,.92);
+  --border: rgba(148,163,184,.10);
+  --border-strong: rgba(148,163,184,.18);
+  --text: #e7ebf2;
+  --text-2: #a3adbf;
+  --text-3: #6d788b;
+  --hover: rgba(148,163,184,.08);
+  --active: rgba(148,163,184,.14);
+  --shadow: 0 20px 50px rgba(2,6,16,.55), 0 2px 8px rgba(2,6,16,.35);
+  --shadow-s: 0 6px 20px rgba(2,6,16,.45);
+  --input: #111722;
+  --scroll: rgba(148,163,184,.22);
 }
 html[data-theme="light"] {
   color-scheme: light;
-  --bg: #f3f4f6;
+  --bg: #f2f4f8;
   --surface: #ffffff;
-  --surface-2: #f6f7f9;
-  --surface-3: #eceef1;
-  --sidebar: #f3f4f7;
-  --glass: rgba(248,249,251,.78);
-  --glass-strong: rgba(250,250,252,.94);
-  --border: rgba(0,0,0,.08);
-  --border-strong: rgba(0,0,0,.15);
-  --text: #1c1d21;
-  --text-2: #5b5e66;
-  --text-3: #8c9098;
-  --hover: rgba(0,0,0,.045);
-  --active: rgba(0,0,0,.08);
-  --shadow: 0 18px 50px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.08);
-  --shadow-s: 0 6px 20px rgba(0,0,0,.12);
+  --surface-2: #f6f7fb;
+  --surface-3: #eceff5;
+  --sidebar: #f4f6fa;
+  --glass: rgba(250,251,254,.76);
+  --glass-strong: rgba(252,253,255,.94);
+  --border: rgba(15,23,42,.08);
+  --border-strong: rgba(15,23,42,.14);
+  --text: #18202e;
+  --text-2: #566072;
+  --text-3: #8a93a3;
+  --hover: rgba(15,23,42,.045);
+  --active: rgba(15,23,42,.08);
+  --shadow: 0 20px 50px rgba(15,23,42,.16), 0 2px 8px rgba(15,23,42,.07);
+  --shadow-s: 0 6px 20px rgba(15,23,42,.10);
   --input: #ffffff;
-  --scroll: rgba(0,0,0,.2);
+  --scroll: rgba(15,23,42,.2);
 }
 html.no-glass { --glass: var(--glass-strong); }
 html.no-glass * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
@@ -1043,6 +1043,67 @@ html.vt-fade::view-transition-new(root) { animation: vtfadein .45s ease both; }
   .mu-bar { flex-wrap: wrap; }
 }
 
+/* ============ icon motion ============ */
+.appicon.art { filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.22)) drop-shadow(0 4px 10px rgba(0,0,0,.10)); }
+.ai .gl { filter: drop-shadow(0 1px .8px rgba(0,0,0,.14)); }
+.ai .gl * { transform-box: fill-box; transform-origin: center; }
+.ai .pv { transform-box: view-box !important; }
+.ai .hh, .ai .mh, .ai .sh { transform-origin: 50px 50px; }
+.ai .needle { transform-origin: 50px 63px; transform: rotate(-70deg); }
+.ai .lid { transform-origin: 50% 100%; }
+.ai .draw, .ai .ln, .ai .swoosh, .ai .tail { stroke-dasharray: 100; stroke-dashoffset: 0; }
+/* idle motion: alive but quiet */
+.ai .cursor { animation: ai-blink 1.2s steps(1) infinite; }
+.ai .sh { animation: ai-spin 60s linear infinite; }
+@keyframes ai-blink { 50% { opacity: 0; } }
+@keyframes ai-spin { to { transform: rotate(360deg); } }
+/* hover motion (on the icon or anything that hosts it) */
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si, .st-row):hover .ai .spin { animation: ai-spin 1.6s cubic-bezier(.5,0,.5,1) infinite; }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .lid { animation: ai-lid .7s cubic-bezier(.18,1.25,.4,1); }
+@keyframes ai-lid { 40% { transform: skewX(-10deg) scaleY(.9); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .globe { animation: ai-globe 1.4s ease-in-out infinite; }
+@keyframes ai-globe { 50% { transform: scaleX(.15); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .tail, :is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .draw, :is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .ln, :is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .swoosh { animation: ai-draw .9s cubic-bezier(.4,0,.2,1); }
+@keyframes ai-draw { from { stroke-dashoffset: 100; } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .dot { animation: ai-pop .9s cubic-bezier(.18,1.25,.4,1); }
+@keyframes ai-pop { 0%, 60% { transform: scale(0); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .prompt { animation: ai-nudge .6s ease-in-out infinite alternate; }
+@keyframes ai-nudge { to { transform: translateX(3px); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .bl { animation: ai-l .6s ease-in-out infinite alternate; }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .br { animation: ai-r .6s ease-in-out infinite alternate; }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .sl { animation: ai-tilt .6s ease-in-out infinite alternate; }
+@keyframes ai-l { to { transform: translateX(-3px); } } @keyframes ai-r { to { transform: translateX(3px); } } @keyframes ai-tilt { to { transform: rotate(14deg); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .key { animation: ai-press .5s ease; }
+.ai .k1 { animation-delay: .08s !important; } .ai .k2 { animation-delay: .16s !important; } .ai .k3 { animation-delay: .24s !important; }
+@keyframes ai-press { 50% { transform: scale(.8); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .sun { animation: ai-rise 1.2s ease-in-out infinite alternate; }
+@keyframes ai-rise { to { transform: translate(-4px, -5px) scale(1.15); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .bounce { animation: ai-bounce .55s cubic-bezier(.3,0,.3,1) infinite alternate; }
+@keyframes ai-bounce { to { transform: translateY(-5px) rotate(-6deg); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .play { animation: ai-beat .8s ease-in-out infinite; }
+@keyframes ai-beat { 30% { transform: scale(1.18); } 60% { transform: scale(.95); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .aperture { animation: ai-spin 1.2s linear infinite; }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .mh { animation: ai-spin 1.5s linear infinite; }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .hh { animation: ai-spin 18s linear infinite; }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .sh { animation-duration: 3s; }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .brush { animation: ai-wiggle .5s ease-in-out infinite alternate; }
+@keyframes ai-wiggle { from { transform: rotate(-8deg); } to { transform: rotate(8deg); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .needle { animation: ai-rev 1.1s cubic-bezier(.3,0,.2,1) infinite alternate; }
+@keyframes ai-rev { from { transform: rotate(-70deg); } 70% { transform: rotate(68deg); } to { transform: rotate(56deg); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .tile { animation: ai-press .5s ease; }
+.ai .t1 { animation-delay: .1s !important; } .ai .t2 { animation-delay: .2s !important; } .ai .t3 { animation-delay: .3s !important; }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .flag { animation: ai-wave .5s ease-in-out infinite alternate; transform-origin: left bottom; }
+@keyframes ai-wave { to { transform: skewY(-8deg) translateY(1px); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .body { animation: ai-slither .6s ease-in-out infinite alternate; }
+@keyframes ai-slither { to { transform: skewX(-7deg) translateX(2px); } }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .apple { animation: ai-beat .9s ease-in-out infinite; }
+:is(.appicon, .tb-app, .dock-item, .lp-app, .sm-app, .sm-li, .it, .si):hover .ai .d { animation: ai-press .6s ease; }
+.ai .d1 { animation-delay: .06s !important; } .ai .d2 { animation-delay: .12s !important; } .ai .d3 { animation-delay: .18s !important; } .ai .d4 { animation-delay: .24s !important; }
+html.no-anim .ai * { animation: none !important; }
+.st-wp.sig { grid-column: span 2; }
+html.wp-light .dicon .lbl { color: #1b2333; text-shadow: 0 1px 2px rgba(255,255,255,.7); }
+html.wp-light .dicon:hover { background: rgba(15,23,42,.06); }
+
 </style>
 </head>
 <body>
@@ -1389,8 +1450,8 @@ K.fileIcon = (kind, size = 48, extra) => {
   const s = size;
   if (kind === 'folder' || kind === 'folder-special') {
     const glyph = extra ? `<g transform="translate(17 22) scale(.58)" stroke="rgba(255,255,255,.92)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${K.icons[extra] || ''}</g>` : '';
-    return `<svg class="fileicon" width="${s}" height="${s}" viewBox="0 0 48 48"><defs><linearGradient id="fg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cb7ff"/><stop offset="1" stop-color="#3f8cf2"/></linearGradient></defs>
-      <path d="M4 11a3 3 0 0 1 3-3h11l4 4h19a3 3 0 0 1 3 3v3H4z" fill="#3577d6"/>
+    return `<svg class="fileicon" width="${s}" height="${s}" viewBox="0 0 48 48"><defs><linearGradient id="fg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6aaefb"/><stop offset="1" stop-color="#3478e6"/></linearGradient></defs>
+      <path d="M4 11a3 3 0 0 1 3-3h11l4 4h19a3 3 0 0 1 3 3v3H4z" fill="#2b66cf"/>
       <rect x="4" y="15" width="40" height="27" rx="3" fill="url(#fg1)"/><rect x="4" y="15" width="40" height="1.2" fill="rgba(255,255,255,.45)"/>${glyph}</svg>`;
   }
   const colors = { text: '#64748b', code: '#8b5cf6', html: '#f97316', image: '#10b981', audio: '#ec4899', video: '#ef4444', pdf: '#dc2626', archive: '#d97706', binary: '#475569', app: '#0ea5e9' };
@@ -1892,6 +1953,7 @@ K.seedFS = async function () {
 
 /* ============ per-user settings + theming ============ */
 K.wallpapers = [
+  { id: 'karanji', name: 'KaranjiOS', css: null, signature: true },
   { id: 'aurora', name: 'Aurora', css: 'radial-gradient(at 20% 20%, #4f46e5 0, transparent 50%), radial-gradient(at 80% 10%, #0ea5e9 0, transparent 45%), radial-gradient(at 70% 80%, #9333ea 0, transparent 50%), radial-gradient(at 10% 90%, #0f766e 0, transparent 50%), #0b1020' },
   { id: 'dusk', name: 'Dusk', css: 'radial-gradient(at 15% 85%, #f97316 0, transparent 45%), radial-gradient(at 85% 75%, #db2777 0, transparent 50%), radial-gradient(at 50% 10%, #312e81 0, transparent 60%), #1e1b4b' },
   { id: 'ocean', name: 'Ocean', css: 'radial-gradient(at 0% 0%, #0369a1 0, transparent 55%), radial-gradient(at 100% 100%, #0d9488 0, transparent 55%), radial-gradient(at 60% 40%, #1e3a8a 0, transparent 60%), #020617' },
@@ -1905,11 +1967,11 @@ K.wallpapers = [
   { id: 'solid-slate', name: 'Slate', css: '#1e293b' },
   { id: 'solid-teal', name: 'Teal', css: '#115e59' },
 ];
-K.accents = ['#3b82f6', '#6366f1', '#8b5cf6', '#ec4899', '#ef4444', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#64748b'];
+K.accents = ['#3d7bfd', '#5b5fe0', '#8257e5', '#d6458a', '#e0524b', '#e8793a', '#d9a21b', '#2fa36b', '#1f9e9a', '#2b98c9', '#64748b'];
 
 K.settings = (function () {
   const defaults = {
-    theme: 'dark', accent: '#3b82f6', wallpaper: { type: 'preset', id: 'aurora' }, transparency: true, animations: true,
+    theme: 'dark', accent: '#3d7bfd', wallpaper: { type: 'preset', id: 'karanji' }, wpVersion: 2, transparency: true, animations: true,
     radius: 'medium', fontScale: 100, buttonLayout: 'right', layout: 'taskbar', taskbarPosition: 'bottom', taskbarAlign: 'center', autohide: false,
     showDesktopIcons: true, desktopIconSize: 48, clock24: false, clockSeconds: false, showDate: true, nightLight: false, nightLightStrength: 40,
     brightness: 100, volume: 70, muted: false, dnd: false, hotCorner: true, showSearchBox: true, showTaskView: true, showWorkspaces: true, workspaces: 4,
@@ -1929,6 +1991,7 @@ K.settings = (function () {
       user = username; const u = K.users.get(username); file = u.home + '/.config/karanji/settings.json';
       cur = JSON.parse(JSON.stringify(defaults));
       try { if (K.vfs.exists(file)) Object.assign(cur, JSON.parse(K.vfs.readFile(file, K.vfs.ROOTCTX))); } catch (e) { console.warn('bad settings file', e); }
+      if ((cur.wpVersion || 1) < 2) { if (!cur.wallpaper || cur.wallpaper.type === 'preset') cur.wallpaper = { type: 'preset', id: 'karanji' }; if (cur.accent === '#3b82f6') cur.accent = '#3d7bfd'; cur.wpVersion = 2; save(); }
       api.apply(); K.emit('settings:load');
     },
     get: k => cur[k],
@@ -1940,11 +2003,15 @@ K.settings = (function () {
       w = w || cur.wallpaper;
       if (!w) return K.wallpapers[0].css;
       if (w.type === 'color') return w.value;
-      if (w.type === 'preset') return (K.wallpapers.find(x => x.id === w.id) || K.wallpapers[0]).css;
+      if (w.type === 'preset') { const p = K.wallpapers.find(x => x.id === w.id) || K.wallpapers[0]; return p.css; }
       return null;
     },
     async applyWallpaper(el) {
-      const w = cur.wallpaper; const targets = el ? [el] : [K.$('#wallpaper'), K.$('#login')].filter(Boolean);
+      const w = cur.wallpaper; document.documentElement.classList.toggle('wp-light', !!w && w.type === 'preset' && (w.id === 'mist' || w.id === 'sand' || (w.id === 'karanji' && api.resolvedTheme() === 'light')));
+      const targets = el ? [el] : [K.$('#wallpaper'), K.$('#login')].filter(Boolean);
+      if (!w || (w.type === 'preset' && (w.id === 'karanji' || !K.wallpapers.find(x => x.id === w.id)))) {
+        const url = await K.karanjiWallpaper(); targets.forEach(t => { t.style.background = `#0c1424 url("${url}") center/cover no-repeat`; }); return;
+      }
       if (w && w.type === 'file') {
         try { const url = await K.vfs.readURL(w.path); targets.forEach(t => { t.style.background = `#111 url("${url}") center/cover no-repeat`; }); return; } catch (e) { }
       }
@@ -1969,7 +2036,7 @@ K.settings = (function () {
         f.style.mixBlendMode = cur.nightLight ? 'multiply' : '';
         f.style.backdropFilter = cur.brightness < 100 ? `brightness(${Math.max(cur.brightness, 20) / 100})` : '';
       }
-      if (!k || k === 'wallpaper') api.applyWallpaper();
+      if (!k || k === 'wallpaper' || (k === 'theme' && (cur.wallpaper || {}).id === 'karanji')) api.applyWallpaper();
     }
   };
   matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (cur.theme === 'auto') api.apply(); });
@@ -3478,34 +3545,44 @@ K.logo = (size = 24, color = 'currentColor') => {
     <path d="${L.seam}" fill="none" stroke="${mono ? 'var(--logo-cut, rgba(0,0,0,.35))' : 'rgba(120,40,0,.35)'}" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.1 3.2"/></g></svg>`;
 };
 
-/* ============ illustrated app icons (original artwork, 100x100) ============ */
+/* ============ app icons: minimal glyphs on calm tiles, with built-in motion ============ */
 K.appArt = (function () {
-  const SQ = 'M50,2 C86,2 98,14 98,50 C98,86 86,98 50,98 C14,98 2,86 2,50 C2,14 14,2 50,2 Z';
-  const bg = (id, a, b, angle = 1) => `<defs><linearGradient id="${id}" x1="0" y1="0" x2="${angle ? 0 : 1}" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><path d="${SQ}" fill="url(#${id})"/>`;
-  const gloss = `<path d="${SQ}" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.2"/><path d="M14,8 C30,3 70,3 86,8 C70,6 30,6 14,8Z" fill="rgba(255,255,255,.25)"/>`;
-  const A = {
-    files: bg('af', '#6fc3ff', '#1f7cf2') + `<path d="M20 30 a5 5 0 0 1 5-5 h16 l6 6 h28 a5 5 0 0 1 5 5 v6 H20z" fill="#cfe7ff"/><rect x="20" y="37" width="60" height="40" rx="6" fill="#fff"/><rect x="20" y="37" width="60" height="40" rx="6" fill="url(#af2)"/><defs><linearGradient id="af2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#dcecff"/></linearGradient></defs><rect x="32" y="52" width="36" height="5" rx="2.5" fill="#1f7cf2" opacity=".85"/><rect x="32" y="62" width="22" height="5" rx="2.5" fill="#1f7cf2" opacity=".45"/>`,
-    browser: bg('ab', '#2b2f77', '#0d1033') + `<defs><linearGradient id="ab2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd23f"/><stop offset=".5" stop-color="#ff7a18"/><stop offset="1" stop-color="#e8175d"/></linearGradient><radialGradient id="ab3" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#7ad0ff"/><stop offset="1" stop-color="#2a47d8"/></radialGradient></defs><circle cx="50" cy="52" r="25" fill="url(#ab3)"/><path d="M38 40c6 3 4 9 10 10s8 8 4 12M60 34c-2 6 4 8 8 6" stroke="#bff0ff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/><path d="M50 18c-21 0-35 17-34 36 2-14 12-24 26-26-8 6-10 14-8 20 4-12 18-16 28-10-6-12-16-17-24-14 4-4 9-6 12-6z" fill="url(#ab2)"/><path d="M84 52c0 19-15 34-34 34-12 0-22-6-28-15 8 7 20 9 30 5 12-4 20-16 18-30 6 0 11 3 14 6z" fill="url(#ab2)"/>`,
-    terminal: bg('at', '#3a4252', '#0e1218') + `<rect x="16" y="22" width="68" height="56" rx="8" fill="#0b0e13" stroke="rgba(255,255,255,.12)"/><circle cx="25" cy="30" r="2.4" fill="#ff5f57"/><circle cx="32" cy="30" r="2.4" fill="#febc2e"/><circle cx="39" cy="30" r="2.4" fill="#28c840"/><path d="M27 47l11 8-11 8" stroke="#4ade80" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="44" y="60" width="18" height="5" rx="2.5" fill="#e5e7eb"/>`,
-    editor: bg('ae', '#9b7bff', '#4b21c9') + `<path d="M28 18h30l14 14v46a5 5 0 0 1-5 5H28a5 5 0 0 1-5-5V23a5 5 0 0 1 5-5z" fill="#fff"/><path d="M58 18v10a4 4 0 0 0 4 4h10" fill="#d9ccff"/><rect x="31" y="42" width="24" height="4" rx="2" fill="#7c5cff"/><rect x="31" y="51" width="32" height="4" rx="2" fill="#c4b5fd"/><rect x="31" y="60" width="18" height="4" rx="2" fill="#c4b5fd"/><path d="M80 48L56 72l-7 2 2-7 24-24z" fill="#ffc83d" stroke="#3b1d99" stroke-width="2" stroke-linejoin="round"/><path d="M75 43l5 5" stroke="#3b1d99" stroke-width="2"/>`,
-    settings: bg('as', '#a9b4c2', '#4b5563') + `<defs><linearGradient id="as2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset="1" stop-color="#cbd5e1"/></linearGradient></defs><circle cx="50" cy="50" r="24" fill="none" stroke="url(#as2)" stroke-width="12" stroke-dasharray="8.1 4.47"/><circle cx="50" cy="50" r="22" fill="url(#as2)"/><circle cx="50" cy="50" r="10" fill="#64748b"/><circle cx="50" cy="50" r="5" fill="#e2e8f0"/>`,
-    monitor: bg('am', '#1d3b34', '#07140f') + `<path d="M18 70 L32 56 L42 62 L56 38 L66 50 L82 30 V80 H18Z" fill="rgba(52,211,153,.25)"/><path d="M18 70 L32 56 L42 62 L56 38 L66 50 L82 30" stroke="#34d399" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="56" cy="38" r="4" fill="#fff"/><path d="M18 80h64" stroke="rgba(255,255,255,.2)" stroke-width="2"/>`,
-    calculator: bg('ac', '#ffb057', '#f0640f') + `<rect x="22" y="20" width="56" height="16" rx="5" fill="rgba(0,0,0,.25)"/><text x="72" y="33" text-anchor="end" font-size="12" font-weight="700" fill="#fff" font-family="Inter,system-ui">1,024</text><g font-family="Inter,system-ui" font-weight="700" font-size="16" text-anchor="middle"><rect x="22" y="42" width="25" height="17" rx="5" fill="#fff"/><text x="34.5" y="56" fill="#f0640f">+</text><rect x="53" y="42" width="25" height="17" rx="5" fill="#fff"/><text x="65.5" y="56" fill="#f0640f">−</text><rect x="22" y="63" width="25" height="17" rx="5" fill="#fff"/><text x="34.5" y="77" fill="#f0640f">×</text><rect x="53" y="63" width="25" height="17" rx="5" fill="#7a2a00"/><text x="65.5" y="77" fill="#fff">=</text></g>`,
-    photos: bg('ap', '#ffd1a6', '#ff6b9a') + `<circle cx="66" cy="34" r="9" fill="#fff6c8"/><path d="M10 78 L36 46 L52 64 L62 54 L90 82 V86 C90 92 86 96 80 96 H20 C14 96 10 92 10 86Z" fill="#7b2ff7" opacity=".85"/><path d="M10 84 L30 64 L46 78 L58 70 L90 92 C86 96 84 98 80 98 H20 C12 98 10 92 10 84Z" fill="#3c1180"/>`,
-    music: bg('amu', '#ff7a9a', '#d4145a') + `<path d="M40 70V32l32-8v38" stroke="#fff" stroke-width="6" fill="none" stroke-linejoin="round"/><ellipse cx="33" cy="70" rx="9" ry="7.5" fill="#fff"/><ellipse cx="65" cy="62" rx="9" ry="7.5" fill="#fff"/><path d="M40 40l32-8" stroke="#fff" stroke-width="6"/>`,
-    video: bg('av', '#3b1018', '#0b0405') + `<rect x="16" y="26" width="68" height="48" rx="8" fill="#e50914"/><g fill="rgba(0,0,0,.35)"><rect x="20" y="30" width="6" height="5" rx="1"/><rect x="20" y="42" width="6" height="5" rx="1"/><rect x="20" y="54" width="6" height="5" rx="1"/><rect x="20" y="65" width="6" height="5" rx="1"/><rect x="74" y="30" width="6" height="5" rx="1"/><rect x="74" y="42" width="6" height="5" rx="1"/><rect x="74" y="54" width="6" height="5" rx="1"/><rect x="74" y="65" width="6" height="5" rx="1"/></g><path d="M43 39v22l19-11z" fill="#fff"/>`,
-    camera: bg('aca', '#5b6475', '#1c2028') + `<rect x="16" y="32" width="68" height="44" rx="10" fill="#e5e7eb"/><rect x="36" y="24" width="22" height="10" rx="3" fill="#e5e7eb"/><circle cx="50" cy="54" r="17" fill="#1f2937"/><circle cx="50" cy="54" r="12" fill="url(#aca2)"/><defs><radialGradient id="aca2" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".5" stop-color="#3730a3"/><stop offset="1" stop-color="#0b0b2a"/></radialGradient></defs><circle cx="45" cy="49" r="3.5" fill="#fff" opacity=".8"/><circle cx="74" cy="40" r="3" fill="#22c55e"/>`,
-    clock: bg('ack', '#2b2f36', '#0c0d10') + `<circle cx="50" cy="50" r="31" fill="#fff"/><g stroke="#111" stroke-width="2.5" stroke-linecap="round">${Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6; return `<line x1="${50 + 25 * Math.sin(a)}" y1="${50 - 25 * Math.cos(a)}" x2="${50 + 28 * Math.sin(a)}" y2="${50 - 28 * Math.cos(a)}"/>`; }).join('')}</g><path d="M50 50 L50 30" stroke="#111" stroke-width="4" stroke-linecap="round"/><path d="M50 50 L64 58" stroke="#111" stroke-width="4" stroke-linecap="round"/><path d="M50 50 L36 70" stroke="#f97316" stroke-width="2" stroke-linecap="round"/><circle cx="50" cy="50" r="3.5" fill="#f97316"/>`,
-    paint: bg('apa', '#fff6e8', '#ffd9a8') + `<path d="M50 20c-19 0-33 13-33 29 0 13 10 20 19 19 6-1 6-6 10-7 6-1 7 8 15 8 13 0 22-9 22-21 0-16-14-28-33-28z" fill="#fff" stroke="#e7c9a0" stroke-width="2"/><circle cx="34" cy="44" r="5.5" fill="#ef4444"/><circle cx="45" cy="32" r="5.5" fill="#f59e0b"/><circle cx="60" cy="31" r="5.5" fill="#22c55e"/><circle cx="71" cy="42" r="5.5" fill="#3b82f6"/><circle cx="68" cy="56" r="5.5" fill="#a855f7"/><path d="M88 18 L60 60" stroke="#7c4a1c" stroke-width="6" stroke-linecap="round"/><path d="M62 57 l-6 9 c-3 4-8 4-9 1 2-1 3-4 6-8z" fill="#ef4444"/>`,
-    racer: bg('ar', '#38bdf8', '#7c3aed') + `<path d="M2 58 H98 V86 C98 96 88 98 80 98 H20 C10 98 2 94 2 86Z" fill="#1f2937"/><path d="M42 58 L58 58 L86 98 H14Z" fill="#374151"/><path d="M49 62h2v6h-2zM48.6 74h2.8v8h-2.8zM48 88h4v8h-4z" fill="#fde047"/><circle cx="74" cy="30" r="10" fill="#fde68a" opacity=".9"/><path d="M2 58 L18 44 L30 52 L44 40 L60 54 L74 46 L98 58Z" fill="#4c1d95" opacity=".7"/><g transform="translate(30 66)"><path d="M4 14 C4 6 10 2 20 2 C30 2 36 6 36 14 V22 H4Z" fill="#ef4444"/><rect x="9" y="5" width="22" height="7" rx="2" fill="#1e293b"/><rect x="0" y="16" width="40" height="7" rx="3" fill="#b91c1c"/><rect x="3" y="18" width="7" height="3" rx="1" fill="#fecaca"/><rect x="30" y="18" width="7" height="3" rx="1" fill="#fecaca"/><rect x="2" y="23" width="8" height="5" rx="1.5" fill="#111"/><rect x="30" y="23" width="8" height="5" rx="1.5" fill="#111"/></g>`,
-    game2048: bg('a2', '#f5c26b', '#e0912f') + `<rect x="18" y="18" width="64" height="64" rx="10" fill="#bb9b72"/><g font-family="Inter,system-ui" font-weight="800" text-anchor="middle"><rect x="23" y="23" width="25" height="25" rx="5" fill="#f2b179"/><text x="35.5" y="41" font-size="14" fill="#fff">8</text><rect x="52" y="23" width="25" height="25" rx="5" fill="#eee4da"/><text x="64.5" y="41" font-size="14" fill="#776e65">2</text><rect x="23" y="52" width="25" height="25" rx="5" fill="#f65e3b"/><text x="35.5" y="69" font-size="12" fill="#fff">64</text><rect x="52" y="52" width="25" height="25" rx="5" fill="#edc22e"/><text x="64.5" y="68" font-size="9" fill="#fff">2048</text></g>`,
-    mines: bg('ami', '#cbd5e1', '#64748b') + `<g fill="#e2e8f0" stroke="#94a3b8"><rect x="18" y="18" width="20" height="20" rx="3"/><rect x="40" y="18" width="20" height="20" rx="3"/><rect x="62" y="18" width="20" height="20" rx="3"/><rect x="18" y="40" width="20" height="20" rx="3"/><rect x="62" y="62" width="20" height="20" rx="3"/></g><g fill="#f8fafc"><rect x="40" y="40" width="20" height="20" rx="3"/><rect x="62" y="40" width="20" height="20" rx="3"/><rect x="18" y="62" width="20" height="20" rx="3"/><rect x="40" y="62" width="20" height="20" rx="3"/></g><text x="72" y="56" font-size="13" font-weight="800" fill="#2563eb" text-anchor="middle" font-family="Inter">1</text><text x="28" y="78" font-size="13" font-weight="800" fill="#16a34a" text-anchor="middle" font-family="Inter">2</text><circle cx="50" cy="72" r="5" fill="#111"/><path d="M50 64v16M42 72h16M44.5 66.5l11 11M55.5 66.5l-11 11" stroke="#111" stroke-width="2"/><path d="M28 34V22M28 22l8 3-8 3" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.5"/>`,
-    snake: bg('asn', '#4ade80', '#15803d') + `<path d="M24 74 C24 60 40 60 48 60 C62 60 74 56 74 44 C74 32 62 28 52 30" stroke="#14532d" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M24 74 C24 60 40 60 48 60 C62 60 74 56 74 44 C74 32 62 28 52 30" stroke="#fde047" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="1 9"/><circle cx="48" cy="31" r="9" fill="#14532d"/><circle cx="45" cy="28" r="2.2" fill="#fff"/><path d="M40 33l-6 1" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/><circle cx="74" cy="76" r="6" fill="#ef4444"/><path d="M74 70c0-3 2-5 4-5" stroke="#14532d" stroke-width="2" fill="none"/>`,
-    notes: bg('an', '#fde68a', '#f59e0b') + `<path d="M24 18h52a4 4 0 0 1 4 4v42L62 82H24a4 4 0 0 1-4-4V22a4 4 0 0 1 4-4z" fill="#fffbeb"/><path d="M62 82V68a4 4 0 0 1 4-4h14" fill="#fde68a"/><rect x="20" y="18" width="60" height="12" rx="4" fill="#fbbf24"/><g stroke="#d6a640" stroke-width="2.5" stroke-linecap="round"><path d="M30 42h40M30 52h40M30 62h24"/></g>`,
-    launchpad: bg('alp', '#94a3b8', '#334155') + `<g fill="#fff">${[0, 1, 2].map(r => [0, 1, 2].map(c => `<rect x="${22 + c * 20}" y="${22 + r * 20}" width="15" height="15" rx="4.5" opacity="${.65 + ((r + c) % 3) * .15}"/>`).join('')).join('')}</g><rect x="22" y="22" width="15" height="15" rx="4.5" fill="#ff9a3d"/><rect x="62" y="62" width="15" height="15" rx="4.5" fill="#60a5fa"/>`
+  const SQ = 'M50,3 C85,3 97,15 97,50 C97,85 85,97 50,97 C15,97 3,85 3,50 C3,15 15,3 50,3 Z';
+  const P = { // [top, bottom, accent]
+    files: ['#5aa2fa', '#2f6fe0'], browser: ['#f6894d', '#d9532f', '#ffe1cc'], terminal: ['#3b4352', '#1d222b', '#86efac'], editor: ['#7472f2', '#4a46c8', '#c9c7ff'],
+    settings: ['#8f99ab', '#5a6375', '#6f798b'], monitor: ['#34b981', '#1d8a5b'], calculator: ['#f4a940', '#d9781a', '#d9781a'], photos: ['#f27a95', '#cf4568'],
+    music: ['#f45f84', '#c22e59'], video: ['#e5584f', '#b3312d'], camera: ['#505b6e', '#2b323e', '#9fb6ff'], clock: ['#2a2f39', '#14171c', '#ff8a3d'],
+    paint: ['#a374f2', '#7646cf', '#ffd166'], racer: ['#33405a', '#161c28', '#ff8a3d'], game2048: ['#eab24f', '#cc8a26'], mines: ['#6b7b93', '#46536a', '#ff6b6b'],
+    snake: ['#3cc07d', '#21925a'], notes: ['#f7c94b', '#e2a41a', '#e2a41a'], launchpad: ['#6d7c93', '#45516a']
   };
-  Object.keys(A).forEach(k => A[k] = `<svg viewBox="0 0 100 100" width="100%" height="100%">${A[k]}${gloss}</svg>`);
-  return A;
+  const W = '#fff', R = 'stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  const G = {
+    files: `<path class="back" d="M23 33a6 6 0 0 1 6-6h13l6 6h23a6 6 0 0 1 6 6v3H23z" fill="${W}" opacity=".55"/><path class="lid" d="M21 41h58a4 4 0 0 1 4 4.6l-3.6 23A6 6 0 0 1 73.5 74h-47a6 6 0 0 1-5.9-5.4L17 45.6A4 4 0 0 1 21 41z" fill="${W}"/>`,
+    browser: `<circle cx="50" cy="48" r="22" stroke="${W}" stroke-width="5" ${R}/><ellipse class="globe" cx="50" cy="48" rx="10" ry="22" stroke="${W}" stroke-width="4.5" ${R}/><path d="M29 48h42" stroke="${W}" stroke-width="4.5" ${R}/><path class="tail" d="M22 66c10 13 32 17 50 7" stroke="${P.browser[2]}" stroke-width="5.5" ${R} pathLength="100"/>`,
+    terminal: `<path class="prompt" d="M29 36l14 14-14 14" stroke="${P.terminal[2]}" stroke-width="7" ${R}/><rect class="cursor" x="49" y="60" width="23" height="7" rx="3.5" fill="${W}"/>`,
+    editor: `<path class="bl" d="M36 34L21 50l15 16" stroke="${W}" stroke-width="7" ${R}/><path class="br" d="M64 34l15 16-15 16" stroke="${W}" stroke-width="7" ${R}/><path class="sl" d="M55 29L45 71" stroke="${P.editor[2]}" stroke-width="7" ${R}/>`,
+    settings: `<g class="spin"><circle cx="50" cy="50" r="22" stroke="${W}" stroke-width="11" fill="none" stroke-dasharray="7.6 9.68"/><circle cx="50" cy="50" r="18.5" fill="${W}"/></g><circle cx="50" cy="50" r="7.5" fill="${P.settings[2]}"/>`,
+    monitor: `<path d="M24 74h52" stroke="${W}" stroke-width="4" opacity=".5" ${R}/><path class="draw" d="M24 62l13-13 10 8 15-19 14 11" stroke="${W}" stroke-width="6.5" ${R} pathLength="100"/><circle class="dot" cx="62" cy="38" r="4.5" fill="${W}"/>`,
+    calculator: [[26, 26, 'M36 30v12M30 36h12'], [54, 26, 'M58 36h12'], [26, 54, 'M31.5 59.5l9 9M40.5 59.5l-9 9'], [54, 54, 'M58 61h12M58 67h12']].map(([x, y, d], i) => `<g class="key k${i}"><rect x="${x}" y="${y}" width="20" height="20" rx="6" fill="${W}" opacity="${i === 3 ? 1 : .95}"/><path d="${d}" stroke="${P.calculator[2]}" stroke-width="4" ${R}/></g>`).join(''),
+    photos: `<circle class="sun" cx="64" cy="35" r="7.5" fill="${W}" opacity=".9"/><path d="M18 73l20-27 13 16 8-9 23 20z" fill="${W}"/>`,
+    music: `<g class="bounce"><path d="M44 65V31l25-6v33" stroke="${W}" stroke-width="6" ${R}/><circle cx="37" cy="65" r="8" fill="${W}"/><circle cx="62" cy="58" r="8" fill="${W}"/></g>`,
+    video: `<rect x="19" y="27" width="62" height="46" rx="11" stroke="${W}" stroke-width="5" ${R} opacity=".55"/><path class="play" d="M44 39v22l18-11z" fill="${W}" stroke="${W}" stroke-width="4" stroke-linejoin="round"/>`,
+    camera: `<path d="M21 39a7 7 0 0 1 7-7h8l4-6h20l4 6h8a7 7 0 0 1 7 7v27a7 7 0 0 1-7 7H28a7 7 0 0 1-7-7z" fill="${W}"/><circle cx="50" cy="52" r="12.5" fill="${P.camera[1]}"/><circle class="aperture" cx="50" cy="52" r="7" stroke="${P.camera[2]}" stroke-width="3" fill="none" stroke-dasharray="5 3"/>`,
+    clock: `<circle cx="50" cy="50" r="29" fill="${W}"/>${Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6, r1 = i % 3 ? 24 : 22; return `<line x1="${(50 + r1 * Math.sin(a)).toFixed(1)}" y1="${(50 - r1 * Math.cos(a)).toFixed(1)}" x2="${(50 + 26 * Math.sin(a)).toFixed(1)}" y2="${(50 - 26 * Math.cos(a)).toFixed(1)}" stroke="#1f242c" stroke-width="${i % 3 ? 1.5 : 2.5}" stroke-linecap="round"/>`; }).join('')}<path class="hh pv" d="M50 50V36" stroke="#1f242c" stroke-width="4" stroke-linecap="round"/><path class="mh pv" d="M50 50L63 57" stroke="#1f242c" stroke-width="3.5" stroke-linecap="round"/><path class="sh pv" d="M50 54V30" stroke="${P.clock[2]}" stroke-width="1.8" stroke-linecap="round"/><circle cx="50" cy="50" r="3" fill="${P.clock[2]}"/>`,
+    paint: `<path class="swoosh" d="M21 72c9-7 17 4 28-3" stroke="${P.paint[2]}" stroke-width="7" ${R} pathLength="100"/><g class="brush"><path d="M76 21L50 51" stroke="${W}" stroke-width="8" ${R}/><path d="M51.5 49.5c-6-2.5-12.5 1.5-12.5 8.5 0 4-2 6-5 7 7.5 3 17 .5 19.5-6.5 1.2-3.8.4-7.2-2-9z" fill="${W}"/></g>`,
+    racer: `<path d="M22 63a28 28 0 0 1 56 0" stroke="${W}" stroke-width="6" ${R} opacity=".9"/>${[-80, -40, 0, 40, 80].map(a => { const r = a * Math.PI / 180; return `<line x1="${(50 + 18 * Math.sin(r)).toFixed(1)}" y1="${(63 - 18 * Math.cos(r)).toFixed(1)}" x2="${(50 + 22 * Math.sin(r)).toFixed(1)}" y2="${(63 - 22 * Math.cos(r)).toFixed(1)}" stroke="${W}" stroke-width="3" stroke-linecap="round" opacity=".7"/>`; }).join('')}<path class="needle pv" d="M50 63L64 46" stroke="${P.racer[2]}" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="63" r="5" fill="${W}"/><path d="M34 76h32" stroke="${W}" stroke-width="4" opacity=".45" ${R}/>`,
+    game2048: [[26, 26, .55], [52, 26, .8], [26, 52, .8], [52, 52, 1]].map(([x, y, o], i) => `<rect class="tile t${i}" x="${x}" y="${y}" width="22" height="22" rx="6" fill="${W}" opacity="${o}"/>`).join('') + `<path d="M58 61h10M63 56v10" stroke="${P.game2048[1]}" stroke-width="3.5" ${R}/>`,
+    mines: `<rect x="24" y="24" width="24" height="24" rx="6" fill="${W}" opacity=".55"/><rect x="52" y="24" width="24" height="24" rx="6" fill="${W}"/><rect x="24" y="52" width="24" height="24" rx="6" fill="${W}"/><rect x="52" y="52" width="24" height="24" rx="6" fill="${W}" opacity=".55"/><text x="64" y="44" font-size="15" font-weight="800" text-anchor="middle" fill="${P.mines[1]}" font-family="Inter,system-ui,sans-serif">1</text><text x="36" y="72" font-size="15" font-weight="800" text-anchor="middle" fill="${P.mines[1]}" font-family="Inter,system-ui,sans-serif">2</text><g class="flag"><path d="M32 46V29" stroke="${W}" stroke-width="3" stroke-linecap="round"/><path d="M33 30l11 4.5-11 4.5z" fill="${P.mines[2]}" stroke="${P.mines[2]}" stroke-width="2" stroke-linejoin="round"/></g><circle cx="64" cy="64" r="5" fill="${P.mines[1]}" opacity=".8"/>`,
+    snake: `<path class="body" d="M27 71c0-11 11-13 21-13s23-3 23-14-10-15-21-13" stroke="${W}" stroke-width="10" ${R}/><circle cx="49" cy="31" r="2.6" fill="${P.snake[1]}"/><circle class="apple" cx="72" cy="72" r="5.5" fill="${W}" opacity=".85"/>`,
+    notes: `<path d="M28 21h35l13 13v40a6 6 0 0 1-6 6H28a6 6 0 0 1-6-6V27a6 6 0 0 1 6-6z" fill="${W}"/><path d="M63 21v8a5 5 0 0 0 5 5h8" fill="${W}" opacity=".6"/><path class="ln" d="M32 46h34M32 56h34M32 66h20" stroke="${P.notes[2]}" stroke-width="5" ${R} pathLength="100"/>`,
+    launchpad: [0, 1, 2].map(r => [0, 1, 2].map(c => `<rect class="d d${r + c}" x="${24 + c * 19}" y="${24 + r * 19}" width="14" height="14" rx="4.5" fill="${W}" opacity="${(r + c) % 2 ? .7 : 1}"/>`).join('')).join('')
+  };
+  const out = {};
+  Object.keys(G).forEach(k => {
+    const [a, b] = P[k];
+    out[k] = `<svg viewBox="0 0 100 100" class="ai ai-${k}" width="100%" height="100%"><defs><linearGradient id="g-${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><path d="${SQ}" fill="url(#g-${k})"/><path d="${SQ}" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1"/><g class="gl">${G[k]}</g></svg>`;
+  });
+  return out;
 })();
 
 /* ============ motion: transitions & micro-interactions ============ */
@@ -3609,6 +3686,56 @@ K.launchpad = (function () {
     document.body.append(el); render(); setTimeout(() => q.focus(), 30);
   }
   return { open, close: () => close(), toggle() { el ? close() : open(); }, isOpen: () => !!el };
+})();
+
+/* ============ KaranjiOS signature wallpaper (rendered at screen resolution) ============ */
+K.karanjiWallpaper = (function () {
+  const cache = {};
+  async function render(variant, w, h) {
+    try { await Promise.race([document.fonts.load('800 100px Inter'), K.sleep(1500)]); } catch (e) { }
+    const dpr = Math.min(2, devicePixelRatio || 1); const W = Math.round(Math.min(3200, w * dpr)), H = Math.round(Math.min(2000, h * dpr));
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const c = cv.getContext('2d');
+    const dark = variant === 'dark'; const s = Math.min(W, H) / 1080;
+    const font = (wt, px) => `${wt} ${px}px Inter, "Segoe UI", system-ui, -apple-system, sans-serif`;
+    // base
+    const bg = c.createLinearGradient(0, 0, W, H);
+    if (dark) { bg.addColorStop(0, '#0c1424'); bg.addColorStop(.5, '#111b31'); bg.addColorStop(1, '#1a1631'); }
+    else { bg.addColorStop(0, '#eef3fc'); bg.addColorStop(.5, '#e9edf9'); bg.addColorStop(1, '#f1ecfa'); }
+    c.fillStyle = bg; c.fillRect(0, 0, W, H);
+    // soft light fields
+    const blob = (x, y, r, col) => { const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0, 0, W, H); };
+    if (dark) { blob(W * .15, H * .12, W * .55, 'rgba(61,123,253,.32)'); blob(W * .92, H * .95, W * .55, 'rgba(130,87,229,.30)'); blob(W * .55, H * .55, W * .35, 'rgba(31,158,154,.12)'); blob(W * .85, H * .1, W * .3, 'rgba(232,121,58,.10)'); }
+    else { blob(W * .12, H * .1, W * .55, 'rgba(61,123,253,.18)'); blob(W * .95, H * .95, W * .55, 'rgba(130,87,229,.16)'); blob(W * .6, H * .45, W * .35, 'rgba(31,158,154,.08)'); blob(W * .85, H * .1, W * .3, 'rgba(232,121,58,.08)'); }
+    // diagonal type pattern
+    c.save(); c.translate(W / 2, H / 2); c.rotate(-22 * Math.PI / 180);
+    const D = Math.hypot(W, H); const fs = 92 * s; c.font = font(800, fs); c.textBaseline = 'middle';
+    const word = 'KaranjiOS'; const gap = fs * .9; const ww = c.measureText(word).width + gap; const rowH = fs * 1.55;
+    c.lineWidth = Math.max(1, 1.3 * s); c.strokeStyle = dark ? 'rgba(255,255,255,.055)' : 'rgba(30,41,82,.07)';
+    let row = 0;
+    for (let y = -D / 2; y < D / 2; y += rowH, row++) { const off = (row % 2) * ww / 2; for (let x = -D / 2 - ww + off; x < D / 2; x += ww) c.strokeText(word, x, y); }
+    // hero band
+    const hf = 200 * s; c.font = font(800, hf); const hw = c.measureText(word).width;
+    const band = c.createLinearGradient(-D / 2, 0, D / 2, 0); band.addColorStop(0, 'rgba(0,0,0,0)'); band.addColorStop(.5, dark ? 'rgba(10,16,32,.4)' : 'rgba(255,255,255,.45)'); band.addColorStop(1, 'rgba(0,0,0,0)');
+    c.fillStyle = band; c.fillRect(-D / 2, -hf * .72, D, hf * 1.44);
+    const tg = c.createLinearGradient(-hw / 2, -hf / 2, hw / 2, hf / 2);
+    if (dark) { tg.addColorStop(0, '#ffffff'); tg.addColorStop(.55, '#b9cbff'); tg.addColorStop(1, '#c7a8ff'); } else { tg.addColorStop(0, '#1f3a8a'); tg.addColorStop(.55, '#3d5fd9'); tg.addColorStop(1, '#6b3fc9'); }
+    c.shadowColor = dark ? 'rgba(61,123,253,.45)' : 'rgba(61,95,217,.25)'; c.shadowBlur = 60 * s;
+    c.fillStyle = tg; c.textAlign = 'center'; c.fillText(word, 0, 0); c.shadowBlur = 0;
+    c.font = font(600, 22 * s); c.fillStyle = dark ? 'rgba(255,255,255,.5)' : 'rgba(30,41,82,.5)'; c.letterSpacing = '6px';
+    try { c.letterSpacing = (8 * s) + 'px'; } catch (e) { }
+    c.fillText('VERSION 2.0  ·  AURORA', 0, hf * .62);
+    c.restore();
+    // vignette
+    const v = c.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .35, W / 2, H / 2, D * .62); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, dark ? 'rgba(0,0,0,.45)' : 'rgba(40,50,90,.12)'); c.fillStyle = v; c.fillRect(0, 0, W, H);
+    // fine grain to avoid banding
+    const n = c.getImageData(0, 0, W, H); const d = n.data; for (let i = 0; i < d.length; i += 4) { const r = (Math.random() - .5) * 6; d[i] += r; d[i + 1] += r; d[i + 2] += r; } c.putImageData(n, 0, 0);
+    return new Promise(res => cv.toBlob(b => res(URL.createObjectURL(b)), 'image/jpeg', .92));
+  }
+  return function (variant) {
+    variant = variant || (K.settings.resolvedTheme() === 'light' ? 'light' : 'dark');
+    const key = variant + ':' + screen.width + 'x' + screen.height;
+    return cache[key] || (cache[key] = render(variant, Math.max(innerWidth, screen.width), Math.max(innerHeight, screen.height)));
+  };
 })();
 
 /* ============ bash-like shell interpreter ============ */
@@ -6074,7 +6201,7 @@ K.apps.register({
       body.append(group('Accent color', K.h('div.st-row', sw)));
       // wallpapers
       const wg = K.h('div.st-wps'); const cur = S.get('wallpaper') || {};
-      K.wallpapers.forEach(w => wg.append(K.h('div.st-wp' + (cur.type === 'preset' && cur.id === w.id ? '.on' : ''), { style: { background: w.css, backgroundSize: 'cover' }, title: w.name, onclick: () => { S.set('wallpaper', { type: 'preset', id: w.id }); show('appearance'); } })));
+      K.wallpapers.forEach(w => { const t = K.h('div.st-wp' + (cur.type === 'preset' && cur.id === w.id ? '.on' : '') + (w.signature ? '.sig' : ''), { style: w.css ? { background: w.css, backgroundSize: 'cover' } : null, title: w.name + (w.signature ? ' (default — adapts to light and dark)' : ''), onclick: () => { S.set('wallpaper', { type: 'preset', id: w.id }); show('appearance'); } }); if (!w.css) K.karanjiWallpaper().then(u => t.style.background = `url("${u}") center/cover`); wg.append(t); });
       const dir = u().home + '/Pictures/Wallpapers'; let imgs = [];
       try { imgs = K.vfs.readdir(u().home + '/Pictures', K.session.ctx()).concat(K.vfs.exists(dir) ? K.vfs.readdir(dir, K.session.ctx()) : []).filter(e => K.mime.kind(e.name, e) === 'image'); } catch (e) { }
       imgs.forEach(e => { const t = K.h('div.st-wp' + (cur.type === 'file' && cur.path === e.path ? '.on' : ''), { title: e.name, onclick: () => { S.set('wallpaper', { type: 'file', path: e.path }); show('appearance'); } }); K.vfs.readURL(e.path, K.session.ctx()).then(url => { t.style.background = `url("${url}") center/cover`; }); wg.append(t); });
@@ -6250,7 +6377,7 @@ K.apps.register({
       body.append(group('Software', row('Shell', null, K.h('span.dim', 'bash (karanji) with ' + Object.keys(K.cmds).length + ' commands')), row('Applications', null, K.h('span.dim', K.apps.list().length + ' installed')), row('Source', null, K.h('a', { href: 'https://github.com/Atharvaaat/karanjiOS', target: '_blank', style: { color: 'var(--accent)' } }, 'github.com/Atharvaaat/karanjiOS'))));
     };
     async function adminDoRaw(reason, fn) { const r = await admin(reason); if (r) try { fn(r); } catch (e) { K.ui.error(e); } }
-    const offs = [K.on('settings:load', () => show(page)), K.on('users:change', () => { if (page === 'users') show('users'); renderNav(); })];
+    const offs = [K.on('settings:load', () => show(page)), K.on('settings:change', k => { if (k === 'theme' && page === 'appearance') setTimeout(() => show('appearance'), 50); }), K.on('users:change', () => { if (page === 'users') show('users'); renderNav(); })];
     win.on('close', () => offs.forEach(f => f()));
     win.settings = { show };
     show(page);
